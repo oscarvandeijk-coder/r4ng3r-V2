@@ -88,3 +88,9 @@ EXTENDED_WORKFLOWS: Dict[str, Type[Workflow]] = {
     "attack_surface_mapping": AttackSurfaceMappingWorkflow,
     "credential_attack_chain": CredentialAttackChainWorkflow,
 }
+
+try:
+    from framework.workflows.autonomous_extensions import EXTREME_WORKFLOWS
+    EXTENDED_WORKFLOWS.update(EXTREME_WORKFLOWS)
+except Exception:
+    EXTREME_WORKFLOWS = {}
