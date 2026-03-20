@@ -34,15 +34,19 @@ class TestDatabase(unittest.TestCase):
         from framework.db.database import db; db.init(self.tmp.name); self.db=db
     def tearDown(self): os.unlink(self.tmp.name)
     def test_job_lifecycle(self):
-        self.db.create_job("j1","test","recon/test",{})
-        self.db.start_job("j1"); j=self.db.get_job("j1")
+        import uuid
+        self.db.create_job(f"j1-{uuid.uuid4()}","test","recon/test",{})
+        job_id = self.db.list_jobs(limit=1)[0]["id"]
+        self.db.start_job(job_id); j=self.db.get_job(job_id)
         self.assertEqual(j["status"],"running")
-        self.db.finish_job("j1",{"output":"done"})
-        j=self.db.get_job("j1"); self.assertEqual(j["status"],"completed")
+        self.db.finish_job(job_id,{"output":"done"})
+        j=self.db.get_job(job_id); self.assertEqual(j["status"],"completed")
     def test_add_and_list_findings(self):
-        self.db.create_job("j2","find_job","recon/test",{})
-        self.db.add_finding("j2","example.com","Test Finding",severity="high")
-        findings=self.db.list_findings(job_id="j2")
+        import uuid
+        job_id = f"j2-{uuid.uuid4()}"
+        self.db.create_job(job_id,"find_job","recon/test",{})
+        self.db.add_finding(job_id,"example.com","Test Finding",severity="high")
+        findings=self.db.list_findings(job_id=job_id)
         self.assertEqual(len(findings),1); self.assertEqual(findings[0]["severity"],"high")
     def test_targets(self):
         self.db.add_target("example.com","domain")
@@ -70,7 +74,7 @@ class TestBaseModule(unittest.TestCase):
         with self.assertRaises(OptionValidationError): mod.validate()
     def test_execute_success(self):
         mod=self._make_module()
-        result=asyncio.get_event_loop().run_until_complete(mod.execute({"target":"test.com","count":"3"}))
+        result=asyncio.run(mod.execute({"target":"test.com","count":"3"}))
         self.assertTrue(result.success); self.assertEqual(result.output["count"],3)
 
 class TestModuleLoader(unittest.TestCase):
@@ -142,3 +146,35 @@ class TestScheduler(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+class TestAutonomousExtensions(unittest.IsolatedAsyncioTestCase):
+    async def test_extreme_workflows_registered(self):
+        from framework.workflows.engine import BUILTIN_WORKFLOWS
+        self.assertIn("identity_fusion_extreme", BUILTIN_WORKFLOWS)
+        self.assertIn("attack_surface_mapping", BUILTIN_WORKFLOWS)
+        self.assertIn("external_pentest_full", BUILTIN_WORKFLOWS)
+        self.assertIn("threat_intelligence_pipeline", BUILTIN_WORKFLOWS)
+
+    async def test_identity_fusion_extreme_module(self):
+        from framework.modules.osint.identity_fusion_extreme import IdentityFusionExtremeModule
+        result = await IdentityFusionExtremeModule().execute({"username": "alice.ops", "email": "alice@example.com", "domain": "example.com"})
+        self.assertTrue(result.success)
+        self.assertIn("graph", result.output)
+        self.assertGreaterEqual(result.output["risk_score"], 0.2)
+
+    async def test_pipeline_engine_v2(self):
+        from framework.automation.pipeline_v2 import PipelineEngineV2, PipelineStepV2
+        pipeline = PipelineEngineV2()
+        async def step1(ctx): return {"alpha": 1}
+        async def step2(ctx): return {"beta": ctx["alpha"] + 1}
+        pipeline.add_step(PipelineStepV2("a", step1)).add_step(PipelineStepV2("b", step2, condition=lambda ctx: "alpha" in ctx))
+        result = await pipeline.run()
+        self.assertTrue(result.success)
+        self.assertEqual(result.context["beta"], 2)
+
+    async def test_autonomous_agent_runs(self):
+        from framework.ai.autonomous_agent import AutonomousAgent
+        agent = AutonomousAgent()
+        result = await agent.run({"seed": {"username": "alice.ops", "email": "alice@example.com", "domain": "example.com"}, "primary_goal": "Map identity"}, max_iterations=1)
+        self.assertIn("execution_log", result)
+        self.assertTrue(result["execution_log"])
