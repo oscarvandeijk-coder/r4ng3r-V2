@@ -267,7 +267,6 @@ BUILTIN_WORKFLOWS: Dict[str, type] = {
     "ssl_web_recon": SSLWebReconWorkflow,
 }
 
-
 class WorkflowBuilder:
     def __init__(self, name: str) -> None:
         self._name = name; self._steps: List[Step] = []; self._base_opts: Dict[str, Any] = {}
@@ -278,6 +277,13 @@ class WorkflowBuilder:
         return self
     def build(self) -> Workflow:
         wf = Workflow(self._base_opts); wf.name = self._name; wf._steps = self._steps; return wf
+
+
+try:
+    from framework.workflows.extensions import EXTENDED_WORKFLOWS
+    BUILTIN_WORKFLOWS.update(EXTENDED_WORKFLOWS)
+except Exception:
+    EXTENDED_WORKFLOWS = {}
 
 
 def get_workflow(name: str, base_options: Optional[Dict[str, Any]] = None) -> Workflow:
