@@ -1,11 +1,11 @@
-# ⚔ RedTeam Framework v4.0 OMEGA
+# ⚔ RedTeam Framework v4.0 OMEGA-BLACK
 
 > **Enterprise-grade modular offensive security platform — Authorized testing only.**  
 > Professional/government red team scale with Palantir-level data integration, analytics, and multi-layered investigation capabilities.
 
 ---
 
-## What's new in v2.0
+## Omega-Black Platform Highlights
 
 - **23 modules** across 9 categories (recon, osint, AD, cloud, web, crypto, wireless, post-exploitation, network)
 - **8 workflows** including `full_ad_compromise`, `identity_fusion`, `ssl_web_recon`, `cloud_audit`
@@ -206,3 +206,23 @@ The pipeline executes these agents in order:
 7. Final integration engine
 
 Artifacts are written to `rtf/V4_ARCHITECTURE_REPORT.md` and `rtf/V4_UPGRADE_REPORT.json`.
+
+
+## OMEGA-BLACK Control Plane
+
+The repository now includes an `framework.omega` extension layer that preserves the current loader/CLI/API paths while adding:
+
+- a 13-engine Omega-Black service registry (`rtf-core`, `rtf-osint-engine`, `rtf-socmint-engine`, `rtf-breach-engine`, `rtf-scraper-engine`, `rtf-casm-engine`, `rtf-graph-engine`, `rtf-ai-engine`, `rtf-credential-engine`, `rtf-report-engine`, `rtf-monitoring-engine`, `rtf-automation-engine`, `rtf-worker-cluster`)
+- a 1000+ source OSINT catalog model spanning username, email, phone, domain, organization, breach, IP, document, and image intelligence
+- Neo4j-ready graph ingestion contracts that persist investigation nodes/edges into the existing SQLite cache while emitting Cypher previews
+- autonomous self-healing commands: `python rtf.py doctor`, `python rtf.py validate`, `python rtf.py fix`, `python rtf.py repair`
+- Omega API surfaces: `/omega/engines`, `/omega/sources`, `/omega/doctor`, `/omega/graph/schema`
+
+### Quick validation
+
+```bash
+python rtf.py doctor
+python rtf.py validate
+python rtf.py titan manifest
+python rtf.py upgrade analyze
+```

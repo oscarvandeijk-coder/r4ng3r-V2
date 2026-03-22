@@ -16,7 +16,11 @@ Usage:
   rtf report [fmt] [output]      — Generate a report
   rtf version                    — Print version
   rtf titan [manifest|health|schema|investigate] — TITAN distributed architecture tools
-  rtf upgrade [analyze|run]           — Generate V4 architecture and upgrade pipeline report
+  rtf doctor                    — Run platform health diagnostics
+  rtf validate                  — Validate Omega-Black platform integrity
+  rtf fix                       — Execute automated self-healing recommendations
+  rtf repair                    — Alias for automated repair workflow
+  rtf upgrade [analyze|run]     — Generate V4 architecture and upgrade pipeline report
 """
 from __future__ import annotations
 
@@ -223,6 +227,20 @@ def cmd_titan(args: argparse.Namespace) -> None:
 
 
 
+
+def _run_omega_health(mode: str) -> None:
+    _init_framework()
+    from framework.omega import omega_doctor
+    if mode == "doctor":
+        report = omega_doctor.inspect()
+    elif mode == "validate":
+        report = omega_doctor.validate()
+    elif mode in {"fix", "repair"}:
+        report = omega_doctor.fix() if mode == "fix" else omega_doctor.repair()
+    else:
+        report = {"status": "unknown", "mode": mode}
+    print(json.dumps(report, indent=2))
+
 def cmd_upgrade(args: argparse.Namespace) -> None:
     _init_framework()
     from framework.upgrade import build_v4_upgrade_report
@@ -297,6 +315,11 @@ def build_parser() -> argparse.ArgumentParser:
     ti = titan_subs.add_parser("investigate")
     ti.add_argument("--options", default="{}")
 
+    subs.add_parser("doctor", help="Run Omega-Black health diagnostics")
+    subs.add_parser("validate", help="Validate framework integrity and compatibility")
+    subs.add_parser("fix", help="Run automated self-healing actions")
+    subs.add_parser("repair", help="Run repair workflow for broken services")
+
     upgrade_p = subs.add_parser("upgrade", help="Generate V4 architecture and upgrade reports")
     upgrade_subs = upgrade_p.add_subparsers(dest="upgrade_subcommand")
     upgrade_subs.add_parser("analyze")
@@ -313,7 +336,9 @@ def main() -> None:
         "console": cmd_console, "api": cmd_api, "dashboard": cmd_dashboard,
         "install": cmd_install, "module": cmd_module, "workflow": cmd_workflow,
         "tools": cmd_tools, "jobs": cmd_jobs, "findings": cmd_findings,
-        "report": cmd_report, "titan": cmd_titan, "upgrade": cmd_upgrade, "version": cmd_version,
+        "report": cmd_report, "titan": cmd_titan, "doctor": lambda args: _run_omega_health("doctor"),
+        "validate": lambda args: _run_omega_health("validate"), "fix": lambda args: _run_omega_health("fix"),
+        "repair": lambda args: _run_omega_health("repair"), "upgrade": cmd_upgrade, "version": cmd_version,
     }
     if not args.command:
         parser.print_help(); sys.exit(0)

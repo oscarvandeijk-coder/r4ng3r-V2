@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
 from framework.titan import TitanOrchestrator, build_titan_manifest
+from framework.omega import omega_engine_registry, omega_source_catalog
 from framework.titan.socmint_pipeline import SOCMINT_STAGES
 from framework.workflows.engine import BUILTIN_WORKFLOWS
 
@@ -34,6 +35,7 @@ class UpgradeArchitecture:
     dashboard: Dict[str, Any]
     api: Dict[str, Any]
     titan: Dict[str, Any]
+    omega: Dict[str, Any]
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -201,6 +203,11 @@ class UpgradePipeline:
                 "service_names": [service["name"] for service in titan_manifest["services"]],
                 "socmint_stages": [f"{code}:{name}" for code, name in SOCMINT_STAGES],
             },
+            omega={
+                "engine_registry": omega_engine_registry.summary(),
+                "osint_source_catalog": omega_source_catalog.summary(),
+                "backward_compatibility": ["Never delete existing modules", "Never break CLI compatibility", "Only extend architecture"],
+            },
         )
 
     def run(self) -> Dict[str, Any]:
@@ -222,6 +229,7 @@ class UpgradePipeline:
                     "module_categories": module_categories,
                     "pipeline_count": len(architecture.pipelines["pipeline_files"]),
                     "service_count": architecture.titan["service_count"],
+                    "omega_engine_count": architecture.omega["engine_registry"]["engine_count"],
                 },
             ),
             UpgradeAgentResult(

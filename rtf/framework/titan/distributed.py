@@ -69,6 +69,7 @@ class TitanOrchestrator:
         engine = PipelineEngineV2(concurrency=6)
         engine.add_step(PipelineStepV2("queue-seed", lambda ctx: self.bus.publish("ingestion", {"seed": seed})))
         engine.add_step(PipelineStepV2("queue-osint", lambda ctx: self.bus.publish("osint", {"seed_keys": sorted(seed.keys())})))
+        engine.add_step(PipelineStepV2("queue-breach", lambda ctx: self.bus.publish("breach", {"email": seed.get("email", ""), "username": seed.get("username", "")})))
         engine.add_step(PipelineStepV2("socmint", lambda ctx: asyncio.to_thread(self.pipeline.run, seed)))
         engine.add_step(PipelineStepV2("queue-graph", lambda ctx: self.bus.publish("graph", {"nodes": len(ctx.get("graph", {}).get("nodes", []))})))
         engine.add_step(PipelineStepV2("queue-report", lambda ctx: self.bus.publish("report", {"risk": ctx.get("identity_resolution", {}).get("risk_score", 0)})))

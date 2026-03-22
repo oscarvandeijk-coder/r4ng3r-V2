@@ -61,3 +61,30 @@ class TestTitanSchema(unittest.TestCase):
         self.assertIn("Person", schema["entity_types"])
         self.assertIn("USES_EMAIL", schema["relationship_types"])
         self.assertEqual(schema["backend"], "Neo4j")
+
+
+class TestOmegaBlackArchitecture(unittest.TestCase):
+    def test_engine_registry_and_sources(self):
+        from framework.omega import omega_engine_registry, omega_source_catalog
+        summary = omega_engine_registry.summary()
+        self.assertGreaterEqual(summary["engine_count"], 13)
+        self.assertIn("rtf-breach-engine", {engine["name"] for engine in summary["engines"]})
+        self.assertGreaterEqual(omega_source_catalog.count(), 1000)
+
+    def test_graph_ingestion_and_doctor(self):
+        from framework.db.database import Database
+        Database._instance = None
+        import tempfile, os
+        tmp = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+        tmp.close()
+        try:
+            from framework.db.database import db
+            db.init(tmp.name)
+            from framework.omega import omega_doctor, omega_graph_ingestion_service
+            report = omega_doctor.inspect()
+            self.assertEqual(report["status"], "healthy")
+            graph = omega_graph_ingestion_service.ingest_osint_result('primary', 'osint/username_enum', {"username": "alice.ops", "email": "alice@example.com", "domain": "example.com"})
+            self.assertTrue(graph["persisted"]["sqlite_graph_cache"])
+            self.assertGreaterEqual(graph["persisted"]["node_count"], 3)
+        finally:
+            os.unlink(tmp.name)

@@ -15,6 +15,7 @@ from framework.db.database import db
 from framework.modules.loader import module_loader
 from framework.registry.tool_registry import tool_registry
 from framework.titan import TitanOrchestrator, build_titan_manifest
+from framework.omega import omega_doctor, omega_engine_registry, omega_source_catalog
 from framework.workflows.engine import BUILTIN_WORKFLOWS
 
 log = get_logger("rtf.dashboard")
@@ -139,12 +140,13 @@ def create_dashboard() -> "Flask":
             {"label":"Tools Registered","value":len(tools)},
             {"label":"Tools Installed","value":sum(1 for t in tools if t["installed"])},
             {"label":"TITAN Services","value":titan_health["service_count"]},
+            {"label":"OSINT Sources","value":omega_source_catalog.count()},
         ]
         by_cat = tool_summary.get("by_category",{})
         tool_chart_data = {"labels":list(by_cat.keys()),"total":[v["total"] for v in by_cat.values()],"installed":[v["installed"] for v in by_cat.values()]}
         install_chart_data = {"installed":tool_summary.get("installed",0),"missing":tool_summary.get("missing",0)}
         socmint_stages = titan.pipeline.run({"username": "demo"})["stages"]
-        return render_template_string(_TEMPLATE, modules=modules, findings=findings, workflows=BUILTIN_WORKFLOWS, stats_cards=stats_cards, tool_chart_data=tool_chart_data, install_chart_data=install_chart_data, titan_health=titan_health, api_host=config.get("api_host","localhost"), api_port=config.get("api_port",8000), manifest=manifest, socmint_stages=socmint_stages)
+        return render_template_string(_TEMPLATE, modules=modules, findings=findings, workflows=BUILTIN_WORKFLOWS, stats_cards=stats_cards, tool_chart_data=tool_chart_data, install_chart_data=install_chart_data, titan_health=titan_health, api_host=config.get("api_host","localhost"), api_port=config.get("api_port",8000), manifest=manifest, socmint_stages=socmint_stages, omega_doctor=omega_doctor.inspect(), omega_engines=omega_engine_registry.summary())
 
     @app.route("/api/jobs")
     def api_jobs(): return jsonify(db.list_jobs(limit=50))

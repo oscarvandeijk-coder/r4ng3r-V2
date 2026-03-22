@@ -5,7 +5,7 @@
 - CLI entrypoint: `rtf/rtf.py`
 - Registered framework modules: 34
 - Built-in workflows: 22
-- TITAN services: 14
+- TITAN services: 15
 
 ## Architecture Map
 
@@ -52,7 +52,7 @@
 ### Architecture agent
 - Status: completed
 - Summary: Generated a repository-wide V4 architecture map and compatibility baseline.
-- Outputs: `{"module_categories": {"active_directory": 3, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}, "pipeline_count": 8, "service_count": 14, "version": "4.0.0"}`
+- Outputs: `{"module_categories": {"active_directory": 3, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}, "omega_engine_count": 15, "pipeline_count": 8, "service_count": 15, "version": "4.0.0"}`
 
 ### Module builder
 - Status: completed
@@ -77,7 +77,7 @@
 ### Self-healing system builder
 - Status: completed
 - Summary: Defined health-checkable queues, services, and repairable extension points for V4 operations.
-- Outputs: `{"heal_targets": ["tool_registry", "module_loader", "scheduler", "titan_message_bus", "database"], "health_snapshot": {"architecture": "RTF TITAN OMEGA", "queue_topics": {}, "queued_messages": 0, "service_count": 14, "services": [{"metadata": {"interfaces": ["cli", "api", "scheduler"]}, "name": "rtf-core", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:osint", "http"]}, "name": "rtf-osint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:socmint"]}, "name": "rtf-socmint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:casm"]}, "name": "rtf-casm-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:credential"]}, "name": "rtf-credential-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:graph", "bolt"]}, "name": "rtf-graph-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:ai"]}, "name": "rtf-ai-engine"`
+- Outputs: `{"heal_targets": ["tool_registry", "module_loader", "scheduler", "titan_message_bus", "database"], "health_snapshot": {"architecture": "RTF TITAN OMEGA", "queue_topics": {}, "queued_messages": 0, "service_count": 15, "services": [{"metadata": {"interfaces": ["cli", "api", "scheduler"]}, "name": "rtf-core", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:osint", "http"]}, "name": "rtf-osint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:socmint"]}, "name": "rtf-socmint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:breach"]}, "name": "rtf-breach-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:casm"]}, "name": "rtf-casm-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:credential"]}, "name": "rtf-credential-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:graph", "bolt"]}, "name": "rtf-graph`
 
 ### Final integration engine
 - Status: completed

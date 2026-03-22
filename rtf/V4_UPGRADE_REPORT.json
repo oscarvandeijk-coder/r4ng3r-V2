@@ -167,11 +167,12 @@
     },
     "titan": {
       "manifest_name": "RTF TITAN OMEGA",
-      "service_count": 14,
+      "service_count": 15,
       "service_names": [
         "rtf-core",
         "rtf-osint-engine",
         "rtf-socmint-engine",
+        "rtf-breach-engine",
         "rtf-casm-engine",
         "rtf-credential-engine",
         "rtf-graph-engine",
@@ -202,6 +203,522 @@
         "L:Recursive pivot engine",
         "M:Threat scoring"
       ]
+    },
+    "omega": {
+      "engine_registry": {
+        "engine_count": 15,
+        "engines": [
+          {
+            "name": "rtf-ai-engine",
+            "purpose": "Identity resolution, summarization, stylometry, and risk scoring",
+            "loader_path": "framework.ai.autonomous_agent",
+            "pipelines": [
+              "identity_resolution",
+              "ai_summary",
+              "profile_clustering"
+            ],
+            "interfaces": [
+              "queue:ai"
+            ],
+            "storage": [
+              "Redis",
+              "MinIO"
+            ],
+            "categories": [
+              "ai",
+              "resolution",
+              "scoring"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-automation-engine",
+            "purpose": "Workflow builder and template automation",
+            "loader_path": "framework.automation.pipeline_v2",
+            "pipelines": [
+              "workflow_builder",
+              "scheduler_bridge"
+            ],
+            "interfaces": [
+              "queue:automation"
+            ],
+            "storage": [
+              "Redis"
+            ],
+            "categories": [
+              "automation",
+              "workflow",
+              "scheduler"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-breach-engine",
+            "purpose": "Breach intelligence ingestion, credential exposure analysis, and leak correlation",
+            "loader_path": "framework.modules.osint.breach_correlation",
+            "pipelines": [
+              "breach_intelligence",
+              "credential_exposure",
+              "leak_monitoring"
+            ],
+            "interfaces": [
+              "queue:breach"
+            ],
+            "storage": [
+              "ElasticSearch",
+              "MinIO",
+              "Neo4j"
+            ],
+            "categories": [
+              "breach",
+              "credential",
+              "email"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-casm-engine",
+            "purpose": "Continuous attack surface management",
+            "loader_path": "framework.modules.recon.casm_pipeline",
+            "pipelines": [
+              "casm",
+              "external_surface_monitoring"
+            ],
+            "interfaces": [
+              "queue:casm"
+            ],
+            "storage": [
+              "ElasticSearch"
+            ],
+            "categories": [
+              "recon",
+              "casm",
+              "surface-management"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-core",
+            "purpose": "Shared config, auth, registry, orchestration entrypoint",
+            "loader_path": "framework.core",
+            "pipelines": [
+              "core_orchestration",
+              "legacy_compatibility"
+            ],
+            "interfaces": [
+              "cli",
+              "api",
+              "scheduler"
+            ],
+            "storage": [
+              "Redis"
+            ],
+            "categories": [
+              "core",
+              "compatibility",
+              "scheduler"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-credential-engine",
+            "purpose": "Breach intel and distributed cracking coordination",
+            "loader_path": "framework.modules.post_exploitation.credential_intelligence",
+            "pipelines": [
+              "credential_intel",
+              "hashcat_cluster",
+              "breach_correlation"
+            ],
+            "interfaces": [
+              "queue:credential"
+            ],
+            "storage": [
+              "MinIO",
+              "ElasticSearch"
+            ],
+            "categories": [
+              "credential",
+              "vault",
+              "replay"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-graph-engine",
+            "purpose": "Knowledge graph ingestion and relationship queries",
+            "loader_path": "framework.titan.knowledge_graph",
+            "pipelines": [
+              "entity_correlation",
+              "graph_materialization"
+            ],
+            "interfaces": [
+              "queue:graph",
+              "bolt"
+            ],
+            "storage": [
+              "Neo4j"
+            ],
+            "categories": [
+              "graph",
+              "neo4j",
+              "correlation"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-ingestion-engine",
+            "purpose": "Normalizes evidence into events, entities, and artifacts",
+            "loader_path": "framework.titan",
+            "pipelines": [
+              "normalization",
+              "evidence_tagging",
+              "artifact_indexing"
+            ],
+            "interfaces": [
+              "queue:ingestion"
+            ],
+            "storage": [
+              "ElasticSearch",
+              "MinIO",
+              "Neo4j"
+            ],
+            "categories": [],
+            "enabled": true
+          },
+          {
+            "name": "rtf-monitoring-engine",
+            "purpose": "Telemetry, metrics, and health aggregation",
+            "loader_path": "framework.scheduler.scheduler",
+            "pipelines": [
+              "observability",
+              "slo_monitoring"
+            ],
+            "interfaces": [
+              "queue:metrics",
+              "prometheus"
+            ],
+            "storage": [
+              "ElasticSearch"
+            ],
+            "categories": [
+              "monitoring",
+              "health",
+              "telemetry"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-osint-engine",
+            "purpose": "Large-scale OSINT collection and normalization",
+            "loader_path": "framework.modules.osint",
+            "pipelines": [
+              "osint",
+              "multi_search",
+              "artifact_enrichment"
+            ],
+            "interfaces": [
+              "queue:osint",
+              "http"
+            ],
+            "storage": [
+              "ElasticSearch",
+              "MinIO"
+            ],
+            "categories": [
+              "osint",
+              "username",
+              "email",
+              "phone",
+              "domain"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-report-engine",
+            "purpose": "HTML, PDF, JSON, Markdown, XLSX report generation",
+            "loader_path": "framework.reporting.engine",
+            "pipelines": [
+              "reporting",
+              "timeline_rendering",
+              "graph_visualization"
+            ],
+            "interfaces": [
+              "queue:report"
+            ],
+            "storage": [
+              "MinIO"
+            ],
+            "categories": [
+              "reporting",
+              "timeline",
+              "artifact-rendering"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-scraper-engine",
+            "purpose": "Search and social scraping with proxy rotation",
+            "loader_path": "framework.modules.osint.web_search_scraper",
+            "pipelines": [
+              "search_scraping",
+              "social_scraping",
+              "metadata_collection"
+            ],
+            "interfaces": [
+              "queue:scrape"
+            ],
+            "storage": [
+              "MinIO"
+            ],
+            "categories": [
+              "search",
+              "scraping",
+              "metadata"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-socmint-engine",
+            "purpose": "15-stage SOCMINT pipeline execution",
+            "loader_path": "framework.titan.socmint_pipeline",
+            "pipelines": [
+              "socmint",
+              "identity_resolution",
+              "recursive_pivoting"
+            ],
+            "interfaces": [
+              "queue:socmint"
+            ],
+            "storage": [
+              "Neo4j",
+              "ElasticSearch"
+            ],
+            "categories": [
+              "socmint",
+              "social",
+              "recursive-pivoting"
+            ],
+            "enabled": true
+          },
+          {
+            "name": "rtf-wireless-engine",
+            "purpose": "RF capture and wireless analysis coordination",
+            "loader_path": "framework.titan",
+            "pipelines": [
+              "sdr_intel",
+              "wireless_capture"
+            ],
+            "interfaces": [
+              "queue:wireless"
+            ],
+            "storage": [
+              "MinIO"
+            ],
+            "categories": [],
+            "enabled": true
+          },
+          {
+            "name": "rtf-worker-cluster",
+            "purpose": "Distributed worker execution for compute-heavy jobs",
+            "loader_path": "framework.titan.distributed",
+            "pipelines": [
+              "parallel_jobs",
+              "fanout_execution"
+            ],
+            "interfaces": [
+              "queue:worker"
+            ],
+            "storage": [
+              "Redis",
+              "MinIO"
+            ],
+            "categories": [
+              "parallelism",
+              "distributed-jobs",
+              "fanout"
+            ],
+            "enabled": true
+          }
+        ],
+        "module_loader_extensions": [
+          {
+            "engine": "rtf-core",
+            "module_prefix": "core",
+            "loader_path": "framework.core",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-osint-engine",
+            "module_prefix": "osint",
+            "loader_path": "framework.modules.osint",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-socmint-engine",
+            "module_prefix": "socmint",
+            "loader_path": "framework.titan.socmint_pipeline",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-breach-engine",
+            "module_prefix": "breach",
+            "loader_path": "framework.modules.osint.breach_correlation",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-casm-engine",
+            "module_prefix": "recon",
+            "loader_path": "framework.modules.recon.casm_pipeline",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-credential-engine",
+            "module_prefix": "credential",
+            "loader_path": "framework.modules.post_exploitation.credential_intelligence",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-graph-engine",
+            "module_prefix": "graph",
+            "loader_path": "framework.titan.knowledge_graph",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-ai-engine",
+            "module_prefix": "ai",
+            "loader_path": "framework.ai.autonomous_agent",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-scraper-engine",
+            "module_prefix": "search",
+            "loader_path": "framework.modules.osint.web_search_scraper",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-wireless-engine",
+            "module_prefix": "generic",
+            "loader_path": "framework.titan",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-report-engine",
+            "module_prefix": "reporting",
+            "loader_path": "framework.reporting.engine",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-ingestion-engine",
+            "module_prefix": "generic",
+            "loader_path": "framework.titan",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-automation-engine",
+            "module_prefix": "automation",
+            "loader_path": "framework.automation.pipeline_v2",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-monitoring-engine",
+            "module_prefix": "monitoring",
+            "loader_path": "framework.scheduler.scheduler",
+            "integration_mode": "existing-module-loader-compatible"
+          },
+          {
+            "engine": "rtf-worker-cluster",
+            "module_prefix": "parallelism",
+            "loader_path": "framework.titan.distributed",
+            "integration_mode": "existing-module-loader-compatible"
+          }
+        ],
+        "tool_families": {
+          "username_discovery": 12,
+          "social_scrapers": 6,
+          "search_engines": 10,
+          "email_breach": 5,
+          "domain_intel": 6,
+          "code_intel": 3
+        }
+      },
+      "osint_source_catalog": {
+        "total_sources": 1183,
+        "categories": {
+          "breach_intelligence": 125,
+          "document_intelligence": 125,
+          "domain_intelligence": 131,
+          "email_intelligence": 125,
+          "image_intelligence": 125,
+          "ip_intelligence": 125,
+          "metadata_analysis": 1,
+          "organization_intelligence": 125,
+          "phone_intelligence": 125,
+          "search_scraping": 10,
+          "secret_discovery": 2,
+          "social_scraping": 6,
+          "username_discovery": 8,
+          "username_intelligence": 150
+        },
+        "priority_sources": {
+          "username_discovery": [
+            "sherlock",
+            "maigret",
+            "nexfil",
+            "blackbird",
+            "social-analyzer",
+            "whatsmyname",
+            "checkusernames",
+            "namechk"
+          ],
+          "social_scraping": [
+            "twint",
+            "instaloader",
+            "snscrape",
+            "toutatis",
+            "gitfive",
+            "reddit-user-analyser"
+          ],
+          "search_scraping": [
+            "google",
+            "duckduckgo",
+            "bing",
+            "brave",
+            "yahoo",
+            "startpage",
+            "qwant",
+            "swisscows",
+            "yandex",
+            "baidu"
+          ],
+          "domain_intelligence": [
+            "subfinder",
+            "amass",
+            "httpx",
+            "naabu",
+            "nmap",
+            "nuclei"
+          ],
+          "secret_discovery": [
+            "trufflehog",
+            "gitleaks"
+          ],
+          "metadata_analysis": [
+            "exiftool"
+          ]
+        },
+        "integration_contract": [
+          "CLI execution",
+          "pipeline integration",
+          "JSON output",
+          "graph ingestion",
+          "report generation"
+        ]
+      },
+      "backward_compatibility": [
+        "Never delete existing modules",
+        "Never break CLI compatibility",
+        "Only extend architecture"
+      ]
     }
   },
   "agents": [
@@ -223,7 +740,8 @@
           "wireless": 2
         },
         "pipeline_count": 8,
-        "service_count": 14
+        "service_count": 15,
+        "omega_engine_count": 15
       }
     },
     {
@@ -352,7 +870,7 @@
         "health_snapshot": {
           "architecture": "RTF TITAN OMEGA",
           "version": "4.0.0-omega",
-          "service_count": 14,
+          "service_count": 15,
           "services": [
             {
               "name": "rtf-core",
@@ -384,6 +902,16 @@
               "metadata": {
                 "interfaces": [
                   "queue:socmint"
+                ]
+              }
+            },
+            {
+              "name": "rtf-breach-engine",
+              "status": "ready",
+              "queue_depth": 0,
+              "metadata": {
+                "interfaces": [
+                  "queue:breach"
                 ]
               }
             },
@@ -597,6 +1125,29 @@
               "storage": [
                 "Neo4j",
                 "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-breach-engine",
+              "purpose": "Breach intelligence ingestion, credential exposure analysis, and leak correlation",
+              "dependencies": [
+                "rtf-osint-engine",
+                "rtf-credential-engine",
+                "rtf-graph-engine"
+              ],
+              "interfaces": [
+                "queue:breach"
+              ],
+              "pipelines": [
+                "breach_intelligence",
+                "credential_exposure",
+                "leak_monitoring"
+              ],
+              "storage": [
+                "ElasticSearch",
+                "MinIO",
+                "Neo4j"
               ],
               "scalability": "horizontal"
             },
@@ -836,6 +1387,11 @@
               "rtf-ai-engine",
               "rtf-graph-engine"
             ],
+            "rtf-breach-engine": [
+              "rtf-osint-engine",
+              "rtf-credential-engine",
+              "rtf-graph-engine"
+            ],
             "rtf-casm-engine": [
               "rtf-core",
               "rtf-report-engine"
@@ -928,6 +1484,23 @@
               "storage": [
                 "Neo4j",
                 "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-breach-engine": {
+              "purpose": "Breach intelligence ingestion, credential exposure analysis, and leak correlation",
+              "interfaces": [
+                "queue:breach"
+              ],
+              "pipelines": [
+                "breach_intelligence",
+                "credential_exposure",
+                "leak_monitoring"
+              ],
+              "storage": [
+                "ElasticSearch",
+                "MinIO",
+                "Neo4j"
               ],
               "scalability": "horizontal"
             },
@@ -1198,6 +1771,23 @@
                 "storage": [
                   "Neo4j",
                   "ElasticSearch"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-breach-engine": {
+                "purpose": "Breach intelligence ingestion, credential exposure analysis, and leak correlation",
+                "interfaces": [
+                  "queue:breach"
+                ],
+                "pipelines": [
+                  "breach_intelligence",
+                  "credential_exposure",
+                  "leak_monitoring"
+                ],
+                "storage": [
+                  "ElasticSearch",
+                  "MinIO",
+                  "Neo4j"
                 ],
                 "scalability": "horizontal"
               },

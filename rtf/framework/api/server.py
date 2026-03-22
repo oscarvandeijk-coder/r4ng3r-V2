@@ -22,6 +22,7 @@ from framework.db.database import db
 from framework.modules.loader import module_loader
 from framework.registry.tool_registry import ToolCategory, tool_registry
 from framework.reporting.engine import Finding as ReportFinding, ReportEngine
+from framework.omega import omega_doctor, omega_engine_registry, omega_graph_ingestion_service, omega_source_catalog
 from framework.scheduler.scheduler import JobStatus, scheduler
 from framework.titan import TitanKnowledgeGraph, TitanOrchestrator, build_titan_manifest
 from framework.titan.knowledge_graph import ENTITY_TYPES, RELATIONSHIP_TYPES
@@ -344,6 +345,26 @@ def create_app() -> "FastAPI":
     @v1.get("/stats", tags=["system"])
     async def stats():
         return {"modules": len(module_loader.list_modules()), "tools": tool_registry.summary(), "jobs": scheduler.stats()}
+
+    @app.get("/omega/engines", tags=["omega"])
+    @v1.get("/omega/engines", tags=["omega"])
+    async def omega_engines(_auth: None = Depends(require_api_key)):
+        return omega_engine_registry.summary()
+
+    @app.get("/omega/sources", tags=["omega"])
+    @v1.get("/omega/sources", tags=["omega"])
+    async def omega_sources(_auth: None = Depends(require_api_key)):
+        return omega_source_catalog.summary()
+
+    @app.get("/omega/doctor", tags=["omega"])
+    @v1.get("/omega/doctor", tags=["omega"])
+    async def omega_doctor_status(_auth: None = Depends(require_api_key)):
+        return omega_doctor.inspect()
+
+    @app.get("/omega/graph/schema", tags=["omega"])
+    @v1.get("/omega/graph/schema", tags=["omega"])
+    async def omega_graph_schema(_auth: None = Depends(require_api_key)):
+        return omega_graph_ingestion_service.schema()
 
     @app.get("/modules", tags=["modules"])
     @v1.get("/modules", tags=["modules"])
