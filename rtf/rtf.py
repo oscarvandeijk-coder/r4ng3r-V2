@@ -15,6 +15,7 @@ Usage:
   rtf findings                   — Show recent findings
   rtf report [fmt] [output]      — Generate a report
   rtf version                    — Print version
+  rtf titan [manifest|health|investigate] — TITAN distributed architecture tools
 """
 from __future__ import annotations
 
@@ -205,6 +206,19 @@ def cmd_report(args: argparse.Namespace) -> None:
     print(f"Report saved: {path}")
 
 
+def cmd_titan(args: argparse.Namespace) -> None:
+    _init_framework()
+    from framework.titan import TitanOrchestrator, build_titan_manifest
+    if args.titan_subcommand == "manifest":
+        print(json.dumps(build_titan_manifest(), indent=2))
+    elif args.titan_subcommand == "health":
+        print(json.dumps(TitanOrchestrator().health(), indent=2))
+    elif args.titan_subcommand == "investigate":
+        seed = json.loads(args.options) if args.options else {}
+        result = asyncio.run(TitanOrchestrator().run_investigation(seed))
+        print(json.dumps(result, indent=2, default=str))
+
+
 def cmd_version(_args: argparse.Namespace) -> None:
     print(f"RedTeam Framework v{VERSION}")
     print("Enterprise RedTeam Platform — For Authorized Testing Only")
@@ -262,6 +276,13 @@ def build_parser() -> argparse.ArgumentParser:
     rp.add_argument("--format", default="html", choices=["html","pdf","xlsx","md","json"])
     rp.add_argument("--output", default="")
 
+    titan_p = subs.add_parser("titan", help="RTF TITAN distributed architecture tools")
+    titan_subs = titan_p.add_subparsers(dest="titan_subcommand")
+    titan_subs.add_parser("manifest")
+    titan_subs.add_parser("health")
+    ti = titan_subs.add_parser("investigate")
+    ti.add_argument("--options", default="{}")
+
     subs.add_parser("version")
     return parser
 
@@ -273,7 +294,7 @@ def main() -> None:
         "console": cmd_console, "api": cmd_api, "dashboard": cmd_dashboard,
         "install": cmd_install, "module": cmd_module, "workflow": cmd_workflow,
         "tools": cmd_tools, "jobs": cmd_jobs, "findings": cmd_findings,
-        "report": cmd_report, "version": cmd_version,
+        "report": cmd_report, "titan": cmd_titan, "version": cmd_version,
     }
     if not args.command:
         parser.print_help(); sys.exit(0)

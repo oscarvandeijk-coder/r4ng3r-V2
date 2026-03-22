@@ -14,6 +14,7 @@ from framework.core.logger import get_logger
 from framework.db.database import db
 from framework.modules.loader import module_loader
 from framework.registry.tool_registry import tool_registry
+from framework.titan import TitanOrchestrator
 from framework.workflows.engine import BUILTIN_WORKFLOWS
 
 log = get_logger("rtf.dashboard")
@@ -51,6 +52,17 @@ _TEMPLATE = r"""<!DOCTYPE html>
     <div style="background:#111;border:1px solid #333;border-radius:8px;padding:20px;">
       <h3 style="color:#dc2626;margin-bottom:12px;">Installation Status</h3>
       <canvas id="installChart" height="220"></canvas>
+    </div>
+  </section>
+  <section style="margin-bottom:32px;">
+    <h2 style="color:#dc2626;font-size:18px;margin-bottom:16px;">RTF TITAN Service Health</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      {% for svc in titan_health.services %}
+      <div style="background:#111;border:1px solid #333;border-radius:8px;padding:14px;">
+        <div style="color:#4cc9f0;font-weight:bold;">{{ svc.name }}</div>
+        <div style="color:#16a34a;font-size:11px;margin-top:4px;">{{ svc.status|upper }}</div>
+        <div style="color:#888;font-size:11px;margin-top:6px;">Queue depth: {{ svc.queue_depth }}</div>
+      </div>{% endfor %}
     </div>
   </section>
   <section style="margin-bottom:32px;">
@@ -155,6 +167,7 @@ def create_dashboard() -> "Flask":
     if not _HAS_FLASK:
         raise ImportError("flask is required: pip install flask")
     app = Flask(__name__)
+    titan = TitanOrchestrator()
     db.init(config.get("db_path","data/framework.db"))
     tool_registry.refresh(); module_loader.load_all()
 
@@ -165,11 +178,12 @@ def create_dashboard() -> "Flask":
         findings = db.list_findings(limit=200)
         jobs = db.list_jobs(limit=30)
         tool_summary = tool_registry.summary()
-        stats_cards = [{"label":"Modules Loaded","value":len(modules)},{"label":"Tools Registered","value":len(tools)},{"label":"Tools Installed","value":sum(1 for t in tools if t["installed"])},{"label":"Total Findings","value":len(findings)}]
+        titan_health = titan.health()
+        stats_cards = [{"label":"Modules Loaded","value":len(modules)},{"label":"Tools Registered","value":len(tools)},{"label":"Tools Installed","value":sum(1 for t in tools if t["installed"])},{"label":"TITAN Services","value":titan_health["service_count"]}]
         by_cat = tool_summary.get("by_category",{})
         tool_chart_data = {"labels":list(by_cat.keys()),"total":[v["total"] for v in by_cat.values()],"installed":[v["installed"] for v in by_cat.values()]}
         install_chart_data = {"installed":tool_summary.get("installed",0),"missing":tool_summary.get("missing",0)}
-        return render_template_string(_TEMPLATE, modules=modules, tools=tools, findings=findings, jobs=jobs, workflows=BUILTIN_WORKFLOWS, stats_cards=stats_cards, tool_chart_data=tool_chart_data, install_chart_data=install_chart_data, api_host=config.get("api_host","localhost"), api_port=config.get("api_port",8000))
+        return render_template_string(_TEMPLATE, modules=modules, tools=tools, findings=findings, jobs=jobs, workflows=BUILTIN_WORKFLOWS, stats_cards=stats_cards, tool_chart_data=tool_chart_data, install_chart_data=install_chart_data, titan_health=titan_health, api_host=config.get("api_host","localhost"), api_port=config.get("api_port",8000))
 
     @app.route("/api/jobs")
     def api_jobs(): return jsonify(db.list_jobs(limit=50))
