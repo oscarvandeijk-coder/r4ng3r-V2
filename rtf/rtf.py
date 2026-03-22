@@ -16,6 +16,7 @@ Usage:
   rtf report [fmt] [output]      — Generate a report
   rtf version                    — Print version
   rtf titan [manifest|health|schema|investigate] — TITAN distributed architecture tools
+  rtf upgrade [analyze|run]           — Generate V4 architecture and upgrade pipeline report
 """
 from __future__ import annotations
 
@@ -221,6 +222,16 @@ def cmd_titan(args: argparse.Namespace) -> None:
         print(json.dumps(result, indent=2, default=str))
 
 
+
+def cmd_upgrade(args: argparse.Namespace) -> None:
+    _init_framework()
+    from framework.upgrade import build_v4_upgrade_report
+    report = build_v4_upgrade_report()
+    if args.upgrade_subcommand == "analyze":
+        print(json.dumps({"version": report["version"], "architecture": report["architecture"], "artifacts": report.get("artifacts", {})}, indent=2))
+    else:
+        print(json.dumps(report, indent=2))
+
 def cmd_version(_args: argparse.Namespace) -> None:
     print(f"RedTeam Framework v{VERSION}")
     print("Enterprise RedTeam OMEGA Intelligence Platform")
@@ -286,6 +297,11 @@ def build_parser() -> argparse.ArgumentParser:
     ti = titan_subs.add_parser("investigate")
     ti.add_argument("--options", default="{}")
 
+    upgrade_p = subs.add_parser("upgrade", help="Generate V4 architecture and upgrade reports")
+    upgrade_subs = upgrade_p.add_subparsers(dest="upgrade_subcommand")
+    upgrade_subs.add_parser("analyze")
+    upgrade_subs.add_parser("run")
+
     subs.add_parser("version")
     return parser
 
@@ -297,7 +313,7 @@ def main() -> None:
         "console": cmd_console, "api": cmd_api, "dashboard": cmd_dashboard,
         "install": cmd_install, "module": cmd_module, "workflow": cmd_workflow,
         "tools": cmd_tools, "jobs": cmd_jobs, "findings": cmd_findings,
-        "report": cmd_report, "titan": cmd_titan, "version": cmd_version,
+        "report": cmd_report, "titan": cmd_titan, "upgrade": cmd_upgrade, "version": cmd_version,
     }
     if not args.command:
         parser.print_help(); sys.exit(0)
