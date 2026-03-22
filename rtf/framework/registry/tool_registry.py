@@ -72,6 +72,11 @@ TOOL_CATALOGUE: List[Dict[str, Any]] = [
     {"name":"h8mail","category":ToolCategory.OSINT,"install_type":InstallType.PIPX,"binary":"h8mail","install_cmd":"pipx install h8mail","description":"Email breach hunter"},
     {"name":"socialscan","category":ToolCategory.OSINT,"install_type":InstallType.PIPX,"binary":"socialscan","install_cmd":"pipx install socialscan","description":"Username/email availability check"},
     {"name":"instaloader","category":ToolCategory.OSINT,"install_type":InstallType.PIPX,"binary":"instaloader","install_cmd":"pipx install instaloader","description":"Instagram OSINT"},
+    {"name":"redis-server","category":ToolCategory.UTILITY,"install_type":InstallType.APT,"binary":"redis-server","apt_package":"redis-server","description":"Redis message broker for NEXUS"},
+    {"name":"rabbitmq-server","category":ToolCategory.UTILITY,"install_type":InstallType.APT,"binary":"rabbitmq-server","apt_package":"rabbitmq-server","description":"RabbitMQ message broker for NEXUS"},
+    {"name":"neo4j","category":ToolCategory.UTILITY,"install_type":InstallType.APT,"binary":"neo4j","apt_package":"neo4j","description":"Graph database for identity resolution"},
+    {"name":"urh","category":ToolCategory.WIRELESS,"install_type":InstallType.APT,"binary":"urh","apt_package":"urh","description":"Universal Radio Hacker SDR toolkit"},
+    {"name":"puppeteer","category":ToolCategory.OSINT,"install_type":InstallType.MANUAL,"binary":"node","description":"Node runtime for stealth scraping stack"},
     # AD
     {"name":"bloodhound-python","category":ToolCategory.AD,"install_type":InstallType.PIP,"binary":"bloodhound-python","install_cmd":"pip install bloodhound","description":"BloodHound Python ingestor"},
     {"name":"crackmapexec","category":ToolCategory.AD,"install_type":InstallType.APT,"binary":"crackmapexec","apt_package":"crackmapexec","description":"AD network attacks"},

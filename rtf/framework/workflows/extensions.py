@@ -89,6 +89,50 @@ EXTENDED_WORKFLOWS: Dict[str, Type[Workflow]] = {
     "credential_attack_chain": CredentialAttackChainWorkflow,
 }
 
+
+class NexusIdentityWorkflow(Workflow):
+    name = "nexus_identity_workflow"
+    description = "NEXUS identity pipeline with graph-based correlation and behavioral fingerprinting."
+
+    def steps(self):
+        from framework.modules.osint.nexus_identity_pipeline import NexusIdentityPipelineModule
+        return WorkflowBuilder(self.name).add_step("nexus_identity_pipeline", NexusIdentityPipelineModule, required=True).build()._steps
+
+
+class ContinuousAttackSurfaceWorkflow(Workflow):
+    name = "continuous_attack_surface"
+    description = "CASM workflow with monitoring, validation, and structured attack-surface output."
+
+    def steps(self):
+        from framework.modules.recon.casm_pipeline import CASMPipelineModule
+        return WorkflowBuilder(self.name).add_step("casm_pipeline", CASMPipelineModule, required=True).build()._steps
+
+
+class CredentialIntelligenceWorkflow(Workflow):
+    name = "credential_intelligence"
+    description = "Breach-aware credential intelligence and password permutation workflow."
+
+    def steps(self):
+        from framework.modules.post_exploitation.credential_intelligence import CredentialIntelligenceModule
+        return WorkflowBuilder(self.name).add_step("credential_intelligence", CredentialIntelligenceModule, required=True).build()._steps
+
+
+class PhysicalWirelessWorkflow(Workflow):
+    name = "physical_wireless_audit"
+    description = "SDR-oriented physical and wireless auditing workflow."
+
+    def steps(self):
+        from framework.modules.wireless.physical_wireless_audit import PhysicalWirelessAuditModule
+        return WorkflowBuilder(self.name).add_step("physical_wireless_audit", PhysicalWirelessAuditModule, required=True).build()._steps
+
+
+EXTENDED_WORKFLOWS.update({
+    "nexus_identity_workflow": NexusIdentityWorkflow,
+    "continuous_attack_surface": ContinuousAttackSurfaceWorkflow,
+    "credential_intelligence": CredentialIntelligenceWorkflow,
+    "physical_wireless_audit": PhysicalWirelessWorkflow,
+})
+
 try:
     from framework.workflows.autonomous_extensions import EXTREME_WORKFLOWS
     EXTENDED_WORKFLOWS.update(EXTREME_WORKFLOWS)
