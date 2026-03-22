@@ -42,6 +42,10 @@ python rtf.py dashboard --port 5000
 # Generate the V4 architecture report
 python rtf.py upgrade analyze
 
+# Run self-healing diagnostics
+python rtf.py doctor
+python rtf.py validate
+
 # Docker
 docker-compose up -d
 ```
@@ -206,3 +210,35 @@ The pipeline executes these agents in order:
 7. Final integration engine
 
 Artifacts are written to `rtf/V4_ARCHITECTURE_REPORT.md` and `rtf/V4_UPGRADE_REPORT.json`.
+
+
+## OMEGA-BLACK Engine Registry
+
+The OMEGA-BLACK expansion keeps the legacy CLI, modules, workflows, and pipelines intact while adding a loader-visible engine layer for:
+
+- `rtf-core`
+- `rtf-osint-engine`
+- `rtf-socmint-engine`
+- `rtf-breach-engine`
+- `rtf-scraper-engine`
+- `rtf-casm-engine`
+- `rtf-graph-engine`
+- `rtf-ai-engine`
+- `rtf-credential-engine`
+- `rtf-report-engine`
+- `rtf-monitoring-engine`
+- `rtf-automation-engine`
+- `rtf-worker-cluster`
+
+Every engine is exposed through the current module loader under the `omega/` category and is aligned to the shared integration contract: CLI execution, pipeline integration, JSON output, graph ingestion, and report generation.
+
+### Self-healing commands
+
+```bash
+python rtf.py doctor
+python rtf.py fix
+python rtf.py validate
+python rtf.py repair
+```
+
+These commands validate the module loader, tool registry, Neo4j graph schema, and OMEGA source-capacity model for 1000+ pluggable intelligence sources.

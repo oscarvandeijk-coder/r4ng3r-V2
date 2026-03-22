@@ -17,6 +17,7 @@ Usage:
   rtf version                    — Print version
   rtf titan [manifest|health|schema|investigate] — TITAN distributed architecture tools
   rtf upgrade [analyze|run]           — Generate V4 architecture and upgrade pipeline report
+  rtf doctor|fix|validate|repair      — Run OMEGA-BLACK self-healing diagnostics
 """
 from __future__ import annotations
 
@@ -232,6 +233,29 @@ def cmd_upgrade(args: argparse.Namespace) -> None:
     else:
         print(json.dumps(report, indent=2))
 
+
+
+def _run_doctor_action(action: str) -> None:
+    _init_framework()
+    from framework.core.doctor import OmegaDoctor
+    print(json.dumps(OmegaDoctor().run(action), indent=2))
+
+def cmd_doctor(_args: argparse.Namespace) -> None:
+    _run_doctor_action("doctor")
+
+
+def cmd_fix(_args: argparse.Namespace) -> None:
+    _run_doctor_action("fix")
+
+
+def cmd_validate(_args: argparse.Namespace) -> None:
+    _run_doctor_action("validate")
+
+
+def cmd_repair(_args: argparse.Namespace) -> None:
+    _run_doctor_action("repair")
+
+
 def cmd_version(_args: argparse.Namespace) -> None:
     print(f"RedTeam Framework v{VERSION}")
     print("Enterprise RedTeam OMEGA Intelligence Platform")
@@ -297,6 +321,11 @@ def build_parser() -> argparse.ArgumentParser:
     ti = titan_subs.add_parser("investigate")
     ti.add_argument("--options", default="{}")
 
+    subs.add_parser("doctor", help="Run OMEGA-BLACK framework diagnostics")
+    subs.add_parser("fix", help="Repair common OMEGA-BLACK registration and dependency issues")
+    subs.add_parser("validate", help="Validate OMEGA-BLACK module, graph, and pipeline contracts")
+    subs.add_parser("repair", help="Rebuild OMEGA-BLACK automation metadata and defaults")
+
     upgrade_p = subs.add_parser("upgrade", help="Generate V4 architecture and upgrade reports")
     upgrade_subs = upgrade_p.add_subparsers(dest="upgrade_subcommand")
     upgrade_subs.add_parser("analyze")
@@ -313,7 +342,7 @@ def main() -> None:
         "console": cmd_console, "api": cmd_api, "dashboard": cmd_dashboard,
         "install": cmd_install, "module": cmd_module, "workflow": cmd_workflow,
         "tools": cmd_tools, "jobs": cmd_jobs, "findings": cmd_findings,
-        "report": cmd_report, "titan": cmd_titan, "upgrade": cmd_upgrade, "version": cmd_version,
+        "report": cmd_report, "titan": cmd_titan, "doctor": cmd_doctor, "fix": cmd_fix, "validate": cmd_validate, "repair": cmd_repair, "upgrade": cmd_upgrade, "version": cmd_version,
     }
     if not args.command:
         parser.print_help(); sys.exit(0)

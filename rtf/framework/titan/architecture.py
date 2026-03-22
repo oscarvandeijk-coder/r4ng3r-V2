@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List
 
+from framework.titan.omega_registry import build_omega_registry, build_self_healing_actions
+
 
 @dataclass
 class TitanService:
@@ -34,6 +36,7 @@ class TitanArchitecture:
             TitanService("rtf-core", "Shared config, auth, registry, orchestration entrypoint", ["Redis", "RabbitMQ"], ["cli", "api", "scheduler"], ["core_orchestration", "legacy_compatibility"], ["Redis"]),
             TitanService("rtf-osint-engine", "Large-scale OSINT collection and normalization", ["rtf-core", "rtf-ingestion-engine"], ["queue:osint", "http"], ["osint", "multi_search", "artifact_enrichment"], ["ElasticSearch", "MinIO"]),
             TitanService("rtf-socmint-engine", "15-stage SOCMINT pipeline execution", ["rtf-osint-engine", "rtf-ai-engine", "rtf-graph-engine"], ["queue:socmint"], ["socmint", "identity_resolution", "recursive_pivoting"], ["Neo4j", "ElasticSearch"]),
+            TitanService("rtf-breach-engine", "Breach intelligence ingestion, credential exposure mapping, and combo correlation", ["rtf-credential-engine", "rtf-graph-engine"], ["queue:breach"], ["breach_intelligence", "combo_correlation"], ["ElasticSearch", "Neo4j", "MinIO"]),
             TitanService("rtf-casm-engine", "Continuous attack surface management", ["rtf-core", "rtf-report-engine"], ["queue:casm"], ["casm", "external_surface_monitoring"], ["ElasticSearch"]),
             TitanService("rtf-credential-engine", "Breach intel and distributed cracking coordination", ["rtf-core", "rtf-worker-cluster"], ["queue:credential"], ["credential_intel", "hashcat_cluster", "breach_correlation"], ["MinIO", "ElasticSearch"]),
             TitanService("rtf-graph-engine", "Knowledge graph ingestion and relationship queries", ["Neo4j", "rtf-ingestion-engine"], ["queue:graph", "bolt"], ["entity_correlation", "graph_materialization"], ["Neo4j"]),
@@ -97,6 +100,8 @@ class TitanArchitecture:
                 "observability": list(self.infrastructure.metrics),
             },
             "services": self.service_catalog(),
+            "omega_registry": build_omega_registry(),
+            "self_healing": build_self_healing_actions(),
         }
 
     def to_dict(self) -> Dict[str, Any]:

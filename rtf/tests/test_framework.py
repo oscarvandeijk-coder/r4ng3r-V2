@@ -227,3 +227,19 @@ class TestV4UpgradePipeline(unittest.TestCase):
         args = parser.parse_args(["upgrade", "analyze"])
         self.assertEqual(args.command, "upgrade")
         self.assertEqual(args.upgrade_subcommand, "analyze")
+
+
+class TestDoctorCommands(unittest.TestCase):
+    def test_cli_parser_has_self_healing_commands(self):
+        import rtf as rtf_cli
+        parser = rtf_cli.build_parser()
+        for command in ["doctor", "fix", "validate", "repair"]:
+            args = parser.parse_args([command])
+            self.assertEqual(args.command, command)
+
+    def test_doctor_report(self):
+        from framework.core.doctor import OmegaDoctor
+        report = OmegaDoctor().run("doctor")
+        self.assertEqual(report["action"], "doctor")
+        self.assertTrue(any(check["name"] == "source_registry" for check in report["checks"]))
+

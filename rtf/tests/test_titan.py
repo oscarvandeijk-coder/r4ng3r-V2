@@ -61,3 +61,29 @@ class TestTitanSchema(unittest.TestCase):
         self.assertIn("Person", schema["entity_types"])
         self.assertIn("USES_EMAIL", schema["relationship_types"])
         self.assertEqual(schema["backend"], "Neo4j")
+
+
+class TestOmegaBlack(unittest.TestCase):
+    def test_omega_registry_capacity(self):
+        from framework.titan import build_omega_registry
+        registry = build_omega_registry()
+        engine_names = {engine["name"] for engine in registry["engines"]}
+        self.assertIn("rtf-breach-engine", engine_names)
+        self.assertIn("rtf-worker-cluster", engine_names)
+        self.assertGreaterEqual(registry["source_capacity"]["estimated_total_sources"], 1000)
+
+    def test_doctor_actions_present(self):
+        from framework.titan import build_self_healing_actions
+        actions = build_self_healing_actions()
+        self.assertIn("doctor", actions)
+        self.assertIn("repair", actions)
+        self.assertIn("validate", actions)
+
+    def test_omega_modules_load_through_module_loader(self):
+        from framework.modules.loader import ModuleLoader
+        loader = ModuleLoader()
+        loader.load_all()
+        modules = {module["path"] for module in loader.list_modules(category="omega")}
+        self.assertIn("omega/rtf_graph_engine", modules)
+        self.assertIn("omega/rtf_breach_engine", modules)
+
