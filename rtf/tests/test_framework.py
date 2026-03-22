@@ -205,3 +205,25 @@ class TestMegaIntegrationModules(unittest.IsolatedAsyncioTestCase):
         result = await PhysicalWirelessAuditModule().execute({"target": "HQ badge readers"})
         self.assertTrue(result.success)
         self.assertEqual(result.output["module"], "wireless/physical_wireless_audit")
+
+
+class TestV4UpgradePipeline(unittest.TestCase):
+    def test_upgrade_pipeline_builds_architecture(self):
+        from framework.upgrade import UpgradePipeline
+        report = UpgradePipeline(repo_root=Path(__file__).resolve().parents[2]).run()
+        self.assertEqual(report["version"], "4.0.0")
+        self.assertEqual(len(report["agents"]), 7)
+        self.assertIn("module_system", report["architecture"])
+
+    def test_upgrade_report_artifacts_written(self):
+        from framework.upgrade import build_v4_upgrade_report
+        report = build_v4_upgrade_report(Path(__file__).resolve().parents[2])
+        self.assertTrue(Path(report["artifacts"]["json"]).name.endswith("V4_UPGRADE_REPORT.json"))
+        self.assertTrue(Path(report["artifacts"]["markdown"]).name.endswith("V4_ARCHITECTURE_REPORT.md"))
+
+    def test_cli_parser_has_upgrade_command(self):
+        import rtf as rtf_cli
+        parser = rtf_cli.build_parser()
+        args = parser.parse_args(["upgrade", "analyze"])
+        self.assertEqual(args.command, "upgrade")
+        self.assertEqual(args.upgrade_subcommand, "analyze")

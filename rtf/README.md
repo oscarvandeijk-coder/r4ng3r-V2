@@ -39,6 +39,9 @@ python rtf.py api --port 8000
 # Start the web dashboard
 python rtf.py dashboard --port 5000
 
+# Generate the V4 architecture report
+python rtf.py upgrade analyze
+
 # Docker
 docker-compose up -d
 ```
@@ -181,3 +184,25 @@ RTF v2.4 now includes a backward-compatible TITAN architecture layer for distrib
 - Neo4j-style intelligence graph schema/API with entity and relationship previews plus Cypher export snippets.
 - Upgraded dashboard surface for architecture mapping, queue telemetry, and SOCMINT readiness.
 - See `OMEGA_ARCHITECTURE_MAP.md` for the full architecture map.
+
+
+## V4 Upgrade Pipeline
+
+RTF v4.0 now exposes a sequential upgrade pipeline that preserves CLI and module compatibility while generating machine-readable architecture artifacts.
+
+```bash
+python rtf.py upgrade analyze   # architecture map + report artifacts
+python rtf.py upgrade run       # full sequential agent output
+```
+
+The pipeline executes these agents in order:
+
+1. Architecture agent
+2. Module builder
+3. OSINT pipeline builder
+4. SOCMINT pipeline builder
+5. Dashboard builder
+6. Self-healing system builder
+7. Final integration engine
+
+Artifacts are written to `rtf/V4_ARCHITECTURE_REPORT.md` and `rtf/V4_UPGRADE_REPORT.json`.

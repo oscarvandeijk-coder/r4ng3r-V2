@@ -26,6 +26,7 @@ from framework.scheduler.scheduler import JobStatus, scheduler
 from framework.titan import TitanKnowledgeGraph, TitanOrchestrator, build_titan_manifest
 from framework.titan.knowledge_graph import ENTITY_TYPES, RELATIONSHIP_TYPES
 from framework.titan.socmint_pipeline import SOCMINT_STAGES, TitanSOCMINTPipeline
+from framework.upgrade import build_v4_upgrade_report
 from framework.workflows.engine import BUILTIN_WORKFLOWS, get_workflow
 
 log = get_logger("rtf.api")
@@ -509,6 +510,11 @@ def create_app() -> "FastAPI":
     @v1.get("/scheduler/jobs", tags=["scheduler"])
     async def list_scheduler_jobs(_auth: None = Depends(require_api_key)):
         return [j.to_dict() for j in scheduler.list_jobs()]
+
+    @app.get("/upgrade/report", tags=["upgrade"])
+    @v1.get("/upgrade/report", tags=["upgrade"])
+    async def upgrade_report(_auth: None = Depends(require_api_key)):
+        return build_v4_upgrade_report()
 
     @app.get("/titan/manifest", tags=["titan"])
     @v1.get("/titan/manifest", tags=["titan"])
