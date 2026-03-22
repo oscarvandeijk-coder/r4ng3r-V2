@@ -1,4 +1,4 @@
-# ⚔ RedTeam Framework v2.0
+# ⚔ RedTeam Framework v4.0 OMEGA
 
 > **Enterprise-grade modular offensive security platform — Authorized testing only.**  
 > Professional/government red team scale with Palantir-level data integration, analytics, and multi-layered investigation capabilities.
@@ -172,3 +172,12 @@ For **authorized testing only**: penetration testing engagements, red team opera
 ## RTF TITAN
 
 RTF v2.4 now includes a backward-compatible TITAN architecture layer for distributed OSINT, SOCMINT, CASM, credential intelligence, graph analytics, AI identity resolution, queue-backed orchestration, and multi-service observability. Use `python rtf.py titan manifest`, `python rtf.py titan health`, or `python rtf.py titan investigate --options ...` to inspect and validate the new distributed layer.
+
+
+## OMEGA Upgrade Highlights
+
+- Distributed `RTF TITAN OMEGA` manifest with 14 services and explicit infrastructure stack.
+- 15-stage SOCMINT pipeline covering seed normalization, username discovery, deep scraping, search scraping, breach intelligence, graph integration, recursive pivots, and threat scoring.
+- Neo4j-style intelligence graph schema/API with entity and relationship previews plus Cypher export snippets.
+- Upgraded dashboard surface for architecture mapping, queue telemetry, and SOCMINT readiness.
+- See `OMEGA_ARCHITECTURE_MAP.md` for the full architecture map.
