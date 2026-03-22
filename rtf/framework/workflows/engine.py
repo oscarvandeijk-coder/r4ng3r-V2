@@ -217,6 +217,34 @@ class IdentityFusionWorkflow(Workflow):
         from framework.modules.osint.identity_fusion import IdentityFusionModule
         return [Step(name="identity_fusion", module_class=IdentityFusionModule, required=True)]
 
+
+class OSINTToolkitWorkflow(Workflow):
+    name = "osint_toolkit"; description = "Pipeline friendly OSINT suite for username, search, recon, secrets, and metadata modules"
+    def steps(self) -> List[Step]:
+        from framework.modules.osint.sherlock import SherlockModule
+        from framework.modules.osint.maigret import MaigretModule
+        from framework.modules.osint.snscrape import SnscrapeModule
+        from framework.modules.osint.duckduckgo import DuckDuckGoSearchModule
+        from framework.modules.recon.subfinder import SubfinderModule
+        from framework.modules.recon.httpx import HttpxModule
+        from framework.modules.recon.naabu import NaabuModule
+        from framework.modules.recon.nuclei import NucleiModule
+        from framework.modules.osint.trufflehog import TruffleHogModule
+        from framework.modules.osint.exiftool import ExiftoolModule
+
+        return [
+            Step(name="sherlock", module_class=SherlockModule, required=False),
+            Step(name="maigret", module_class=MaigretModule, required=False),
+            Step(name="snscrape", module_class=SnscrapeModule, option_transformer=lambda _prev: {"query": self._base_options.get("username", ""), "mode": "twitter-user"}, required=False),
+            Step(name="duckduckgo", module_class=DuckDuckGoSearchModule, option_transformer=lambda _prev: {"query": self._base_options.get("query") or self._base_options.get("username") or self._base_options.get("target", "")}, required=False),
+            Step(name="subfinder", module_class=SubfinderModule, option_transformer=lambda _prev: {"target": self._base_options.get("domain", "")}, required=False),
+            Step(name="httpx", module_class=HttpxModule, option_transformer=lambda _prev: {"target": self._base_options.get("domain") or self._base_options.get("target", "")}, required=False),
+            Step(name="naabu", module_class=NaabuModule, option_transformer=lambda _prev: {"target": self._base_options.get("domain") or self._base_options.get("target", "")}, required=False),
+            Step(name="nuclei", module_class=NucleiModule, option_transformer=lambda _prev: {"target": self._base_options.get("target") or self._base_options.get("domain", "")}, required=False),
+            Step(name="trufflehog", module_class=TruffleHogModule, option_transformer=lambda _prev: {"target": self._base_options.get("path") or self._base_options.get("target", "")}, required=False),
+            Step(name="exiftool", module_class=ExiftoolModule, option_transformer=lambda _prev: {"target": self._base_options.get("file") or self._base_options.get("target", "")}, required=False),
+        ]
+
 class CloudAuditWorkflow(Workflow):
     name = "cloud_audit"; description = "Cloud audit: aws_enum → shodan_search"
     def steps(self) -> List[Step]:
@@ -262,6 +290,7 @@ BUILTIN_WORKFLOWS: Dict[str, type] = {
     "web_audit": WebAuditWorkflow,
     "osint_person": OSINTPersonWorkflow,
     "identity_fusion": IdentityFusionWorkflow,
+    "osint_toolkit": OSINTToolkitWorkflow,
     "cloud_audit": CloudAuditWorkflow,
     "full_ad_compromise": FullADCompromiseWorkflow,
     "ssl_web_recon": SSLWebReconWorkflow,

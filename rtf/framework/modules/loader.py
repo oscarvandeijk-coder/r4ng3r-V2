@@ -111,6 +111,7 @@ class ModuleLoader:
         count = 0
         for _name, cls in inspect.getmembers(mod, inspect.isclass):
             if (issubclass(cls, BaseModule) and cls is not BaseModule
+                    and not inspect.isabstract(cls)
                     and cls.__module__ == getattr(mod, "__name__", None)):
                 try:
                     src = inspect.getfile(cls)
