@@ -227,3 +227,34 @@ class TestV4UpgradePipeline(unittest.TestCase):
         args = parser.parse_args(["upgrade", "analyze"])
         self.assertEqual(args.command, "upgrade")
         self.assertEqual(args.upgrade_subcommand, "analyze")
+
+
+class TestArchitectureEngines(unittest.IsolatedAsyncioTestCase):
+    async def test_engine_registry_contains_requested_services(self):
+        from framework.engines import engine_registry
+        names = {spec.name for spec in engine_registry.list()}
+        self.assertIn("rtf-core", names)
+        self.assertIn("rtf-breach-engine", names)
+        self.assertIn("rtf-report-engine", names)
+        self.assertEqual(len(names), 12)
+
+    async def test_architecture_module_executes(self):
+        from framework.modules.architecture.rtf_breach_engine import RtfBreachEngineModule
+        result = await RtfBreachEngineModule().execute({"target": "example.com", "operation_id": "op-1"})
+        self.assertTrue(result.success)
+        self.assertEqual(result.output["name"], "rtf-breach-engine")
+        self.assertEqual(result.output["async_pipeline"]["queue"], "queue:breach")
+
+    async def test_engine_mesh_workflow_registered(self):
+        from framework.workflows.engine import BUILTIN_WORKFLOWS
+        self.assertIn("engine_mesh", BUILTIN_WORKFLOWS)
+
+
+class TestArchitectureCli(unittest.TestCase):
+    def test_cli_parser_has_engine_command(self):
+        import rtf as rtf_cli
+        parser = rtf_cli.build_parser()
+        args = parser.parse_args(["engine", "info", "rtf-core"])
+        self.assertEqual(args.command, "engine")
+        self.assertEqual(args.engine_subcommand, "info")
+        self.assertEqual(args.name, "rtf-core")
