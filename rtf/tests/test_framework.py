@@ -178,3 +178,30 @@ class TestAutonomousExtensions(unittest.IsolatedAsyncioTestCase):
         result = await agent.run({"seed": {"username": "alice.ops", "email": "alice@example.com", "domain": "example.com"}, "primary_goal": "Map identity"}, max_iterations=1)
         self.assertIn("execution_log", result)
         self.assertTrue(result["execution_log"])
+
+
+class TestMegaIntegrationModules(unittest.IsolatedAsyncioTestCase):
+    async def test_nexus_identity_pipeline_module(self):
+        from framework.modules.osint.nexus_identity_pipeline import NexusIdentityPipelineModule
+        result = await NexusIdentityPipelineModule().execute({"username": "alice.ops", "email": "alice@example.com", "phone": "(555) 123-4567", "company": "Example Corp"})
+        self.assertTrue(result.success)
+        self.assertEqual(result.output["schema_version"], "rtf-intel/1.0")
+        self.assertIn("neo4j", result.output["integrations"])
+
+    async def test_casm_pipeline_module(self):
+        from framework.modules.recon.casm_pipeline import CASMPipelineModule
+        result = await CASMPipelineModule().execute({"target": "example.com"})
+        self.assertTrue(result.success)
+        self.assertEqual(result.output["module"], "recon/casm_pipeline")
+
+    async def test_credential_intelligence_module(self):
+        from framework.modules.post_exploitation.credential_intelligence import CredentialIntelligenceModule
+        result = await CredentialIntelligenceModule().execute({"full_name": "Alice Example", "company": "ExampleCorp", "city": "Austin", "pet_name": "Pixel", "birth_year": "1992"})
+        self.assertTrue(result.success)
+        self.assertGreaterEqual(len(result.output["entities"]["password_candidates"]), 5)
+
+    async def test_physical_wireless_audit_module(self):
+        from framework.modules.wireless.physical_wireless_audit import PhysicalWirelessAuditModule
+        result = await PhysicalWirelessAuditModule().execute({"target": "HQ badge readers"})
+        self.assertTrue(result.success)
+        self.assertEqual(result.output["module"], "wireless/physical_wireless_audit")
