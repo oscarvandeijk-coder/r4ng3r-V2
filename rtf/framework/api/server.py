@@ -18,6 +18,7 @@ from framework.db.database import db
 from framework.modules.loader import module_loader
 from framework.registry.tool_registry import tool_registry, ToolCategory
 from framework.scheduler.scheduler import scheduler
+from framework.titan import TitanOrchestrator, build_titan_manifest
 from framework.workflows.engine import BUILTIN_WORKFLOWS, get_workflow
 
 log = get_logger("rtf.api")
@@ -62,6 +63,7 @@ def create_app() -> "FastAPI":
         return {"items":items,"pagination":{"limit":limit,"offset":offset,"total":total,"has_more":offset+len(items)<total}}
 
     v1 = APIRouter(prefix="/api/v1")
+    titan = TitanOrchestrator()
 
     @app.get("/health", tags=["system"])
     @v1.get("/health", tags=["system"])
@@ -192,6 +194,21 @@ def create_app() -> "FastAPI":
     @v1.get("/scheduler/jobs", tags=["scheduler"])
     async def list_scheduler_jobs(_auth: None=Depends(require_api_key)):
         return [j.to_dict() for j in scheduler.list_jobs()]
+
+    @app.get("/titan/manifest", tags=["titan"])
+    @v1.get("/titan/manifest", tags=["titan"])
+    async def titan_manifest(_auth: None=Depends(require_api_key)):
+        return build_titan_manifest()
+
+    @app.get("/titan/health", tags=["titan"])
+    @v1.get("/titan/health", tags=["titan"])
+    async def titan_health(_auth: None=Depends(require_api_key)):
+        return titan.health()
+
+    @app.post("/titan/investigate", tags=["titan"])
+    @v1.post("/titan/investigate", tags=["titan"])
+    async def titan_investigate(body: "ModuleRunRequest", _auth: None=Depends(require_api_key)):
+        return await titan.run_investigation(body.options)
 
     app.include_router(v1)
     return app

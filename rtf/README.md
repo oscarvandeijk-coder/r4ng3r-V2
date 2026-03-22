@@ -167,3 +167,8 @@ All endpoints also under `/api/v1/...` for versioned access.
 ## Legal Notice
 
 For **authorized testing only**: penetration testing engagements, red team operations with written permission, CTF competitions, and internal security research in controlled lab environments.
+
+
+## RTF TITAN
+
+RTF v2.4 now includes a backward-compatible TITAN architecture layer for distributed OSINT, SOCMINT, CASM, credential intelligence, graph analytics, AI identity resolution, queue-backed orchestration, and multi-service observability. Use `python rtf.py titan manifest`, `python rtf.py titan health`, or `python rtf.py titan investigate --options ...` to inspect and validate the new distributed layer.
