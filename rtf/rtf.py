@@ -16,6 +16,7 @@ Usage:
   rtf report [fmt] [output]      — Generate a report
   rtf version                    — Print version
   rtf titan [manifest|health|schema|investigate] — TITAN distributed architecture tools
+  rtf engine [list|info|run|map]      — Architecture engine registry and execution plans
   rtf upgrade [analyze|run]           — Generate V4 architecture and upgrade pipeline report
 """
 from __future__ import annotations
@@ -223,6 +224,22 @@ def cmd_titan(args: argparse.Namespace) -> None:
 
 
 
+
+def cmd_engine(args: argparse.Namespace) -> None:
+    _init_framework()
+    from framework.engines import engine_registry, engine_runtime
+    if args.engine_subcommand == "list":
+        for spec in engine_registry.list():
+            print(f"  {spec.name:24} {spec.queue:18} {spec.description[:70]}")
+    elif args.engine_subcommand == "info":
+        print(json.dumps(engine_runtime.describe(args.name), indent=2))
+    elif args.engine_subcommand == "run":
+        seed = json.loads(args.options) if args.options else {}
+        print(json.dumps(engine_runtime.run(args.name, seed), indent=2))
+    elif args.engine_subcommand == "map":
+        print(json.dumps(engine_registry.architecture_map(), indent=2))
+
+
 def cmd_upgrade(args: argparse.Namespace) -> None:
     _init_framework()
     from framework.upgrade import build_v4_upgrade_report
@@ -289,6 +306,16 @@ def build_parser() -> argparse.ArgumentParser:
     rp.add_argument("--format", default="html", choices=["html","pdf","xlsx","md","json"])
     rp.add_argument("--output", default="")
 
+    engine_p = subs.add_parser("engine", help="Inspect and execute architecture engines")
+    engine_sub = engine_p.add_subparsers(dest="engine_subcommand")
+    engine_sub.add_parser("list", help="List registered architecture engines")
+    engine_info = engine_sub.add_parser("info", help="Show architecture engine metadata")
+    engine_info.add_argument("name")
+    engine_run = engine_sub.add_parser("run", help="Build an execution plan for an engine")
+    engine_run.add_argument("name")
+    engine_run.add_argument("--options", default="{}")
+    engine_sub.add_parser("map", help="Show the full architecture engine map")
+
     titan_p = subs.add_parser("titan", help="RTF TITAN distributed architecture tools")
     titan_subs = titan_p.add_subparsers(dest="titan_subcommand")
     titan_subs.add_parser("manifest")
@@ -313,7 +340,7 @@ def main() -> None:
         "console": cmd_console, "api": cmd_api, "dashboard": cmd_dashboard,
         "install": cmd_install, "module": cmd_module, "workflow": cmd_workflow,
         "tools": cmd_tools, "jobs": cmd_jobs, "findings": cmd_findings,
-        "report": cmd_report, "titan": cmd_titan, "upgrade": cmd_upgrade, "version": cmd_version,
+        "report": cmd_report, "titan": cmd_titan, "engine": cmd_engine, "upgrade": cmd_upgrade, "version": cmd_version,
     }
     if not args.command:
         parser.print_help(); sys.exit(0)

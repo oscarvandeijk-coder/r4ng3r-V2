@@ -3,15 +3,15 @@
 ## Executive Summary
 - Version: 4.0.0
 - CLI entrypoint: `rtf/rtf.py`
-- Registered framework modules: 34
-- Built-in workflows: 22
+- Registered framework modules: 47
+- Built-in workflows: 23
 - TITAN services: 14
 
 ## Architecture Map
 
 ### Module System
 - Base class: `framework/modules/base.py::BaseModule`
-- Categories: {"active_directory": 3, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}
+- Categories: {"active_directory": 3, "architecture": 13, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}
 
 ### Module Loader
 - Implementation: `framework/modules/loader.py`
@@ -21,7 +21,7 @@
 - Workflow engine: `framework/workflows/engine.py`
 - Pipeline v2: `framework/automation/pipeline_v2.py`
 - Legacy orchestrator: `core/pipeline_orchestrator.py`
-- Workflow names: ad_attack, attack_surface_mapping, cloud_attack_pipeline, cloud_audit, continuous_attack_surface, credential_attack_chain, credential_intelligence, deep_osint, external_pentest_full, full_ad_compromise, full_recon, identity_fusion, identity_fusion_extreme, infrastructure_correlation, nexus_identity_workflow, osint_person, physical_wireless_audit, social_engineering_intel, ssl_web_recon, threat_intelligence_pipeline, web_audit, web_deep_audit
+- Workflow names: ad_attack, attack_surface_mapping, cloud_attack_pipeline, cloud_audit, continuous_attack_surface, credential_attack_chain, credential_intelligence, deep_osint, engine_mesh, external_pentest_full, full_ad_compromise, full_recon, identity_fusion, identity_fusion_extreme, infrastructure_correlation, nexus_identity_workflow, osint_person, physical_wireless_audit, social_engineering_intel, ssl_web_recon, threat_intelligence_pipeline, web_audit, web_deep_audit
 
 ### CLI Interface
 - Main command router: `rtf/rtf.py`
@@ -52,12 +52,12 @@
 ### Architecture agent
 - Status: completed
 - Summary: Generated a repository-wide V4 architecture map and compatibility baseline.
-- Outputs: `{"module_categories": {"active_directory": 3, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}, "pipeline_count": 8, "service_count": 14, "version": "4.0.0"}`
+- Outputs: `{"module_categories": {"active_directory": 3, "architecture": 13, "cloud": 3, "crypto": 1, "network": 1, "osint": 8, "post_exploitation": 4, "recon": 7, "web": 5, "wireless": 2}, "pipeline_count": 8, "service_count": 14, "version": "4.0.0"}`
 
 ### Module builder
 - Status: completed
 - Summary: Built a non-breaking extension inventory for legacy and TITAN modules.
-- Outputs: `{"compatibility_contract": ["BaseModule.info()", "BaseModule._declare_options()", "BaseModule.run()", "ModuleResult serialization"], "module_count": 34}`
+- Outputs: `{"compatibility_contract": ["BaseModule.info()", "BaseModule._declare_options()", "BaseModule.run()", "ModuleResult serialization"], "module_count": 47}`
 
 ### OSINT pipeline builder
 - Status: completed
@@ -72,14 +72,14 @@
 ### Dashboard builder
 - Status: completed
 - Summary: Composed dashboard data contracts for Flask and SPA surfaces without altering legacy routes.
-- Outputs: `{"dashboard_surfaces": ["framework/dashboard/app.py", "dashboard_ui/src/App.tsx"], "workflow_count": 22}`
+- Outputs: `{"dashboard_surfaces": ["framework/dashboard/app.py", "dashboard_ui/src/App.tsx"], "workflow_count": 23}`
 
 ### Self-healing system builder
 - Status: completed
 - Summary: Defined health-checkable queues, services, and repairable extension points for V4 operations.
-- Outputs: `{"heal_targets": ["tool_registry", "module_loader", "scheduler", "titan_message_bus", "database"], "health_snapshot": {"architecture": "RTF TITAN OMEGA", "queue_topics": {}, "queued_messages": 0, "service_count": 14, "services": [{"metadata": {"interfaces": ["cli", "api", "scheduler"]}, "name": "rtf-core", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:osint", "http"]}, "name": "rtf-osint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:socmint"]}, "name": "rtf-socmint-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:casm"]}, "name": "rtf-casm-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:credential"]}, "name": "rtf-credential-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:graph", "bolt"]}, "name": "rtf-graph-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:ai"]}, "name": "rtf-ai-engine"`
+- Outputs: `{"heal_targets": ["tool_registry", "module_loader", "scheduler", "titan_message_bus", "database"], "health_snapshot": {"architecture": "RTF TITAN OMEGA", "queue_topics": {}, "queued_messages": 0, "service_count": 14, "services": [{"metadata": {"interfaces": ["queue:ai"]}, "name": "rtf-ai-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:automation"]}, "name": "rtf-automation-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:breach"]}, "name": "rtf-breach-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:casm"]}, "name": "rtf-casm-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["cli", "api", "scheduler"]}, "name": "rtf-core", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:credential"]}, "name": "rtf-credential-engine", "queue_depth": 0, "status": "ready"}, {"metadata": {"interfaces": ["queue:graph", "bolt"]}, "name": "rtf-graph-engine"`
 
 ### Final integration engine
 - Status: completed
 - Summary: Unified CLI, API, dashboard, workflows, data, and TITAN services into a single V4 manifest.
-- Outputs: `{"entrypoints": ["rtf/rtf.py", "framework/api/server.py", "framework/dashboard/app.py"], "titan_manifest": {"architecture_map": {"data_plane": {"observability": ["Prometheus", "Grafana"], "queueing": ["RabbitMQ", "Redis"], "storage": ["Neo4j", "ElasticSearch", "MinIO"]}, "entrypoints": {"api": ["/health", "/stats", "/modules", "/workflows", "/graph/schema", "/titan/manifest"], "cli": ["rtf console", "rtf module", "rtf workflow", "rtf titan"], "dashboard": ["investigation_manager", "graph_explorer", "module_execution_panel", "report_viewer"]}, "pipelines": {"legacy": ["full_recon", "identity_fusion", "cloud_audit", "web_audit"], "omega": ["socmint_15_stage", "identity_resolution", "global_intelligence_graph", "recursive_pivot_engine", "distributed_reporting"]}, "services": {"rtf-ai-engine": {"interfaces": ["queue:ai"], "pipelines": ["identity_resolution", "ai_summary", "profile_clustering"], "purpose": "Identity resolution, summarization, stylometry, and risk scoring", "scalability": "h`
+- Outputs: `{"entrypoints": ["rtf/rtf.py", "framework/api/server.py", "framework/dashboard/app.py"], "titan_manifest": {"architecture_map": {"data_plane": {"observability": ["Prometheus", "Grafana"], "queueing": ["RabbitMQ", "Redis"], "storage": ["Neo4j", "ElasticSearch", "MinIO"]}, "engine_mesh": {"distributed_workers": {"rtf-ai-engine": ["inference-worker", "ranking-worker"], "rtf-automation-engine": ["pipeline-worker", "template-worker"], "rtf-breach-engine": ["breach-worker", "dedupe-worker"], "rtf-casm-engine": ["surface-worker", "drift-worker"], "rtf-core": ["coordinator", "api-gateway"], "rtf-credential-engine": ["spray-worker", "cracker-worker"], "rtf-graph-engine": ["graph-writer", "query-worker"], "rtf-monitoring-engine": ["metrics-worker", "alert-worker"], "rtf-osint-engine": ["search-worker", "enrichment-worker"], "rtf-report-engine": ["report-worker", "render-worker"], "rtf-scraper-engine": ["fetch-worker", "parser-worker"], "rtf-socmint-engine": ["persona-worker", "timeline-worker"]}`

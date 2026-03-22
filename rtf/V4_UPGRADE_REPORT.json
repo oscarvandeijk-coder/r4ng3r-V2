@@ -10,7 +10,7 @@
         "framework.modules package scan",
         "external filesystem module scan"
       ],
-      "registry_count": 34,
+      "registry_count": 47,
       "lookup_modes": [
         "exact",
         "case-insensitive partial match"
@@ -20,6 +20,7 @@
       "base_class": "framework/modules/base.py::BaseModule",
       "categories": {
         "active_directory": 3,
+        "architecture": 13,
         "cloud": 3,
         "crypto": 1,
         "network": 1,
@@ -29,7 +30,7 @@
         "web": 5,
         "wireless": 2
       },
-      "module_count": 34,
+      "module_count": 47,
       "compatibility_contract": [
         "BaseModule.info()",
         "BaseModule._declare_options()",
@@ -60,6 +61,7 @@
         "credential_attack_chain",
         "credential_intelligence",
         "deep_osint",
+        "engine_mesh",
         "external_pentest_full",
         "full_ad_compromise",
         "full_recon",
@@ -169,20 +171,20 @@
       "manifest_name": "RTF TITAN OMEGA",
       "service_count": 14,
       "service_names": [
-        "rtf-core",
-        "rtf-osint-engine",
-        "rtf-socmint-engine",
+        "rtf-ai-engine",
+        "rtf-automation-engine",
+        "rtf-breach-engine",
         "rtf-casm-engine",
+        "rtf-core",
         "rtf-credential-engine",
         "rtf-graph-engine",
-        "rtf-ai-engine",
-        "rtf-scraper-engine",
-        "rtf-wireless-engine",
-        "rtf-report-engine",
-        "rtf-ingestion-engine",
-        "rtf-automation-engine",
         "rtf-monitoring-engine",
-        "rtf-worker-cluster"
+        "rtf-osint-engine",
+        "rtf-report-engine",
+        "rtf-scraper-engine",
+        "rtf-socmint-engine",
+        "rtf-worker-cluster",
+        "rtf-ingestion-engine"
       ],
       "socmint_stages": [
         "A:Seed normalization",
@@ -213,6 +215,7 @@
         "version": "4.0.0",
         "module_categories": {
           "active_directory": 3,
+          "architecture": 13,
           "cloud": 3,
           "crypto": 1,
           "network": 1,
@@ -231,7 +234,7 @@
       "status": "completed",
       "summary": "Built a non-breaking extension inventory for legacy and TITAN modules.",
       "outputs": {
-        "module_count": 34,
+        "module_count": 47,
         "compatibility_contract": [
           "BaseModule.info()",
           "BaseModule._declare_options()",
@@ -334,7 +337,7 @@
           "framework/dashboard/app.py",
           "dashboard_ui/src/App.tsx"
         ],
-        "workflow_count": 22
+        "workflow_count": 23
       }
     },
     {
@@ -355,35 +358,32 @@
           "service_count": 14,
           "services": [
             {
-              "name": "rtf-core",
+              "name": "rtf-ai-engine",
               "status": "ready",
               "queue_depth": 0,
               "metadata": {
                 "interfaces": [
-                  "cli",
-                  "api",
-                  "scheduler"
+                  "queue:ai"
                 ]
               }
             },
             {
-              "name": "rtf-osint-engine",
+              "name": "rtf-automation-engine",
               "status": "ready",
               "queue_depth": 0,
               "metadata": {
                 "interfaces": [
-                  "queue:osint",
-                  "http"
+                  "queue:automation"
                 ]
               }
             },
             {
-              "name": "rtf-socmint-engine",
+              "name": "rtf-breach-engine",
               "status": "ready",
               "queue_depth": 0,
               "metadata": {
                 "interfaces": [
-                  "queue:socmint"
+                  "queue:breach"
                 ]
               }
             },
@@ -394,6 +394,18 @@
               "metadata": {
                 "interfaces": [
                   "queue:casm"
+                ]
+              }
+            },
+            {
+              "name": "rtf-core",
+              "status": "ready",
+              "queue_depth": 0,
+              "metadata": {
+                "interfaces": [
+                  "cli",
+                  "api",
+                  "scheduler"
                 ]
               }
             },
@@ -419,12 +431,34 @@
               }
             },
             {
-              "name": "rtf-ai-engine",
+              "name": "rtf-monitoring-engine",
               "status": "ready",
               "queue_depth": 0,
               "metadata": {
                 "interfaces": [
-                  "queue:ai"
+                  "queue:metrics",
+                  "prometheus"
+                ]
+              }
+            },
+            {
+              "name": "rtf-osint-engine",
+              "status": "ready",
+              "queue_depth": 0,
+              "metadata": {
+                "interfaces": [
+                  "queue:osint"
+                ]
+              }
+            },
+            {
+              "name": "rtf-report-engine",
+              "status": "ready",
+              "queue_depth": 0,
+              "metadata": {
+                "interfaces": [
+                  "queue:report",
+                  "http"
                 ]
               }
             },
@@ -439,53 +473,12 @@
               }
             },
             {
-              "name": "rtf-wireless-engine",
+              "name": "rtf-socmint-engine",
               "status": "ready",
               "queue_depth": 0,
               "metadata": {
                 "interfaces": [
-                  "queue:wireless"
-                ]
-              }
-            },
-            {
-              "name": "rtf-report-engine",
-              "status": "ready",
-              "queue_depth": 0,
-              "metadata": {
-                "interfaces": [
-                  "queue:report"
-                ]
-              }
-            },
-            {
-              "name": "rtf-ingestion-engine",
-              "status": "ready",
-              "queue_depth": 0,
-              "metadata": {
-                "interfaces": [
-                  "queue:ingestion"
-                ]
-              }
-            },
-            {
-              "name": "rtf-automation-engine",
-              "status": "ready",
-              "queue_depth": 0,
-              "metadata": {
-                "interfaces": [
-                  "queue:automation"
-                ]
-              }
-            },
-            {
-              "name": "rtf-monitoring-engine",
-              "status": "ready",
-              "queue_depth": 0,
-              "metadata": {
-                "interfaces": [
-                  "queue:metrics",
-                  "prometheus"
+                  "queue:socmint"
                 ]
               }
             },
@@ -496,6 +489,16 @@
               "metadata": {
                 "interfaces": [
                   "queue:worker"
+                ]
+              }
+            },
+            {
+              "name": "rtf-ingestion-engine",
+              "status": "ready",
+              "queue_depth": 0,
+              "metadata": {
+                "interfaces": [
+                  "queue:ingestion"
                 ]
               }
             }
@@ -536,20 +539,42 @@
           },
           "services": [
             {
-              "name": "rtf-core",
-              "purpose": "Shared config, auth, registry, orchestration entrypoint",
+              "name": "rtf-ai-engine",
+              "purpose": "AI correlation engine for identity resolution, prioritization, and summarization.",
               "dependencies": [
-                "Redis",
-                "RabbitMQ"
+                "rtf-core",
+                "rtf-graph-engine"
               ],
               "interfaces": [
-                "cli",
-                "api",
-                "scheduler"
+                "queue:ai"
               ],
               "pipelines": [
-                "core_orchestration",
-                "legacy_compatibility"
+                "feature_extraction",
+                "identity_resolution",
+                "risk_scoring",
+                "brief_generation"
+              ],
+              "storage": [
+                "Redis",
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-automation-engine",
+              "purpose": "Automation engine for reusable async task pipelines and workflow templates.",
+              "dependencies": [
+                "rtf-core",
+                "rtf-monitoring-engine"
+              ],
+              "interfaces": [
+                "queue:automation"
+              ],
+              "pipelines": [
+                "template_expand",
+                "pipeline_compile",
+                "worker_dispatch",
+                "result_reduce"
               ],
               "storage": [
                 "Redis"
@@ -557,82 +582,90 @@
               "scalability": "horizontal"
             },
             {
-              "name": "rtf-osint-engine",
-              "purpose": "Large-scale OSINT collection and normalization",
-              "dependencies": [
-                "rtf-core",
-                "rtf-ingestion-engine"
-              ],
-              "interfaces": [
-                "queue:osint",
-                "http"
-              ],
-              "pipelines": [
-                "osint",
-                "multi_search",
-                "artifact_enrichment"
-              ],
-              "storage": [
-                "ElasticSearch",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            {
-              "name": "rtf-socmint-engine",
-              "purpose": "15-stage SOCMINT pipeline execution",
+              "name": "rtf-breach-engine",
+              "purpose": "Breach intelligence engine for leak ingestion, credential exposure scoring, and downstream pivots.",
               "dependencies": [
                 "rtf-osint-engine",
-                "rtf-ai-engine",
+                "rtf-credential-engine",
                 "rtf-graph-engine"
               ],
               "interfaces": [
-                "queue:socmint"
+                "queue:breach"
               ],
               "pipelines": [
-                "socmint",
-                "identity_resolution",
-                "recursive_pivoting"
+                "leak_ingestion",
+                "record_deduplication",
+                "credential_exposure_scoring",
+                "pivot_generation"
               ],
               "storage": [
-                "Neo4j",
-                "ElasticSearch"
+                "ElasticSearch",
+                "MinIO",
+                "Neo4j"
               ],
               "scalability": "horizontal"
             },
             {
               "name": "rtf-casm-engine",
-              "purpose": "Continuous attack surface management",
+              "purpose": "Continuous attack surface management engine with discovery and drift tracking.",
               "dependencies": [
                 "rtf-core",
-                "rtf-report-engine"
+                "rtf-graph-engine",
+                "rtf-monitoring-engine"
               ],
               "interfaces": [
                 "queue:casm"
               ],
               "pipelines": [
-                "casm",
-                "external_surface_monitoring"
+                "asset_seed",
+                "surface_discovery",
+                "exposure_scoring",
+                "drift_detection"
               ],
               "storage": [
-                "ElasticSearch"
+                "ElasticSearch",
+                "Neo4j"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-core",
+              "purpose": "Shared orchestration plane for configuration, module dispatch, scheduler bridging, and CLI bootstrap.",
+              "dependencies": [
+                "rtf-automation-engine",
+                "rtf-monitoring-engine"
+              ],
+              "interfaces": [
+                "cli",
+                "api",
+                "scheduler"
+              ],
+              "pipelines": [
+                "config_load",
+                "module_resolution",
+                "queue_dispatch",
+                "result_merge"
+              ],
+              "storage": [
+                "Redis"
               ],
               "scalability": "horizontal"
             },
             {
               "name": "rtf-credential-engine",
-              "purpose": "Breach intel and distributed cracking coordination",
+              "purpose": "Credential attack coordination engine for sprays, cracking, and reuse analysis.",
               "dependencies": [
-                "rtf-core",
-                "rtf-worker-cluster"
+                "rtf-breach-engine",
+                "rtf-core"
               ],
               "interfaces": [
                 "queue:credential"
               ],
               "pipelines": [
-                "credential_intel",
-                "hashcat_cluster",
-                "breach_correlation"
+                "candidate_generation",
+                "reuse_analysis",
+                "distributed_cracking",
+                "result_enrichment"
               ],
               "storage": [
                 "MinIO",
@@ -642,18 +675,19 @@
             },
             {
               "name": "rtf-graph-engine",
-              "purpose": "Knowledge graph ingestion and relationship queries",
+              "purpose": "Graph intelligence storage and relationship query layer for distributed investigations.",
               "dependencies": [
-                "Neo4j",
-                "rtf-ingestion-engine"
+                "rtf-core"
               ],
               "interfaces": [
                 "queue:graph",
                 "bolt"
               ],
               "pipelines": [
-                "entity_correlation",
-                "graph_materialization"
+                "entity_ingest",
+                "edge_materialization",
+                "query_projection",
+                "subgraph_export"
               ],
               "storage": [
                 "Neo4j"
@@ -661,80 +695,133 @@
               "scalability": "horizontal"
             },
             {
-              "name": "rtf-ai-engine",
-              "purpose": "Identity resolution, summarization, stylometry, and risk scoring",
-              "dependencies": [
-                "rtf-graph-engine",
-                "rtf-core"
-              ],
-              "interfaces": [
-                "queue:ai"
-              ],
-              "pipelines": [
-                "identity_resolution",
-                "ai_summary",
-                "profile_clustering"
-              ],
-              "storage": [
-                "Redis",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            {
-              "name": "rtf-scraper-engine",
-              "purpose": "Search and social scraping with proxy rotation",
-              "dependencies": [
-                "rtf-osint-engine"
-              ],
-              "interfaces": [
-                "queue:scrape"
-              ],
-              "pipelines": [
-                "search_scraping",
-                "social_scraping",
-                "metadata_collection"
-              ],
-              "storage": [
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            {
-              "name": "rtf-wireless-engine",
-              "purpose": "RF capture and wireless analysis coordination",
+              "name": "rtf-monitoring-engine",
+              "purpose": "Observability engine for metrics, worker health, and execution telemetry.",
               "dependencies": [
                 "rtf-core",
-                "rtf-ingestion-engine"
+                "rtf-automation-engine"
               ],
               "interfaces": [
-                "queue:wireless"
+                "queue:metrics",
+                "prometheus"
               ],
               "pipelines": [
-                "sdr_intel",
-                "wireless_capture"
+                "telemetry_ingest",
+                "health_aggregation",
+                "slo_evaluation",
+                "alert_projection"
               ],
               "storage": [
+                "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-osint-engine",
+              "purpose": "OSINT collection mesh for search, enrichment, and normalization across passive sources.",
+              "dependencies": [
+                "rtf-core",
+                "rtf-scraper-engine",
+                "rtf-graph-engine"
+              ],
+              "interfaces": [
+                "queue:osint"
+              ],
+              "pipelines": [
+                "seed_normalization",
+                "search_collection",
+                "artifact_enrichment",
+                "entity_normalization"
+              ],
+              "storage": [
+                "ElasticSearch",
                 "MinIO"
               ],
               "scalability": "horizontal"
             },
             {
               "name": "rtf-report-engine",
-              "purpose": "HTML, PDF, JSON, Markdown, XLSX report generation",
+              "purpose": "Reporting engine for graph-backed findings, executive summaries, and artifact bundles.",
               "dependencies": [
                 "rtf-graph-engine",
-                "rtf-ai-engine"
+                "rtf-ai-engine",
+                "rtf-monitoring-engine"
               ],
               "interfaces": [
-                "queue:report"
+                "queue:report",
+                "http"
               ],
               "pipelines": [
-                "reporting",
-                "timeline_rendering",
-                "graph_visualization"
+                "finding_aggregation",
+                "timeline_render",
+                "graph_embed",
+                "report_emit"
               ],
               "storage": [
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-scraper-engine",
+              "purpose": "Proxy-aware scraping engine for search, websites, and social artifacts.",
+              "dependencies": [
+                "rtf-core",
+                "rtf-osint-engine"
+              ],
+              "interfaces": [
+                "queue:scrape"
+              ],
+              "pipelines": [
+                "request_plan",
+                "distributed_fetch",
+                "artifact_parse",
+                "cache_publish"
+              ],
+              "storage": [
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-socmint-engine",
+              "purpose": "SOCMINT pipeline for persona fusion, recursive pivots, and timeline assembly.",
+              "dependencies": [
+                "rtf-osint-engine",
+                "rtf-ai-engine",
+                "rtf-graph-engine"
+              ],
+              "interfaces": [
+                "queue:socmint"
+              ],
+              "pipelines": [
+                "handle_expansion",
+                "profile_correlation",
+                "timeline_build",
+                "relationship_scoring"
+              ],
+              "storage": [
+                "Neo4j",
+                "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            {
+              "name": "rtf-worker-cluster",
+              "purpose": "Distributed worker execution for compute-heavy jobs",
+              "dependencies": [
+                "RabbitMQ",
+                "Redis"
+              ],
+              "interfaces": [
+                "queue:worker"
+              ],
+              "pipelines": [
+                "parallel_jobs",
+                "fanout_execution"
+              ],
+              "storage": [
+                "Redis",
                 "MinIO"
               ],
               "scalability": "horizontal"
@@ -761,53 +848,278 @@
                 "Neo4j"
               ],
               "scalability": "horizontal"
-            },
-            {
-              "name": "rtf-automation-engine",
-              "purpose": "Workflow builder and template automation",
-              "dependencies": [
-                "rtf-core",
-                "rtf-worker-cluster"
+            }
+          ],
+          "dependency_map": {
+            "rtf-ai-engine": [
+              "rtf-core",
+              "rtf-graph-engine"
+            ],
+            "rtf-automation-engine": [
+              "rtf-core",
+              "rtf-monitoring-engine"
+            ],
+            "rtf-breach-engine": [
+              "rtf-osint-engine",
+              "rtf-credential-engine",
+              "rtf-graph-engine"
+            ],
+            "rtf-casm-engine": [
+              "rtf-core",
+              "rtf-graph-engine",
+              "rtf-monitoring-engine"
+            ],
+            "rtf-core": [
+              "rtf-automation-engine",
+              "rtf-monitoring-engine"
+            ],
+            "rtf-credential-engine": [
+              "rtf-breach-engine",
+              "rtf-core"
+            ],
+            "rtf-graph-engine": [
+              "rtf-core"
+            ],
+            "rtf-monitoring-engine": [
+              "rtf-core",
+              "rtf-automation-engine"
+            ],
+            "rtf-osint-engine": [
+              "rtf-core",
+              "rtf-scraper-engine",
+              "rtf-graph-engine"
+            ],
+            "rtf-report-engine": [
+              "rtf-graph-engine",
+              "rtf-ai-engine",
+              "rtf-monitoring-engine"
+            ],
+            "rtf-scraper-engine": [
+              "rtf-core",
+              "rtf-osint-engine"
+            ],
+            "rtf-socmint-engine": [
+              "rtf-osint-engine",
+              "rtf-ai-engine",
+              "rtf-graph-engine"
+            ],
+            "rtf-worker-cluster": [
+              "RabbitMQ",
+              "Redis"
+            ],
+            "rtf-ingestion-engine": [
+              "MinIO",
+              "ElasticSearch",
+              "Neo4j"
+            ]
+          },
+          "service_catalog": {
+            "rtf-ai-engine": {
+              "purpose": "AI correlation engine for identity resolution, prioritization, and summarization.",
+              "interfaces": [
+                "queue:ai"
               ],
+              "pipelines": [
+                "feature_extraction",
+                "identity_resolution",
+                "risk_scoring",
+                "brief_generation"
+              ],
+              "storage": [
+                "Redis",
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-automation-engine": {
+              "purpose": "Automation engine for reusable async task pipelines and workflow templates.",
               "interfaces": [
                 "queue:automation"
               ],
               "pipelines": [
-                "workflow_builder",
-                "scheduler_bridge"
+                "template_expand",
+                "pipeline_compile",
+                "worker_dispatch",
+                "result_reduce"
               ],
               "storage": [
                 "Redis"
               ],
               "scalability": "horizontal"
             },
-            {
-              "name": "rtf-monitoring-engine",
-              "purpose": "Telemetry, metrics, and health aggregation",
-              "dependencies": [
-                "Prometheus",
-                "Grafana"
+            "rtf-breach-engine": {
+              "purpose": "Breach intelligence engine for leak ingestion, credential exposure scoring, and downstream pivots.",
+              "interfaces": [
+                "queue:breach"
               ],
+              "pipelines": [
+                "leak_ingestion",
+                "record_deduplication",
+                "credential_exposure_scoring",
+                "pivot_generation"
+              ],
+              "storage": [
+                "ElasticSearch",
+                "MinIO",
+                "Neo4j"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-casm-engine": {
+              "purpose": "Continuous attack surface management engine with discovery and drift tracking.",
+              "interfaces": [
+                "queue:casm"
+              ],
+              "pipelines": [
+                "asset_seed",
+                "surface_discovery",
+                "exposure_scoring",
+                "drift_detection"
+              ],
+              "storage": [
+                "ElasticSearch",
+                "Neo4j"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-core": {
+              "purpose": "Shared orchestration plane for configuration, module dispatch, scheduler bridging, and CLI bootstrap.",
+              "interfaces": [
+                "cli",
+                "api",
+                "scheduler"
+              ],
+              "pipelines": [
+                "config_load",
+                "module_resolution",
+                "queue_dispatch",
+                "result_merge"
+              ],
+              "storage": [
+                "Redis"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-credential-engine": {
+              "purpose": "Credential attack coordination engine for sprays, cracking, and reuse analysis.",
+              "interfaces": [
+                "queue:credential"
+              ],
+              "pipelines": [
+                "candidate_generation",
+                "reuse_analysis",
+                "distributed_cracking",
+                "result_enrichment"
+              ],
+              "storage": [
+                "MinIO",
+                "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-graph-engine": {
+              "purpose": "Graph intelligence storage and relationship query layer for distributed investigations.",
+              "interfaces": [
+                "queue:graph",
+                "bolt"
+              ],
+              "pipelines": [
+                "entity_ingest",
+                "edge_materialization",
+                "query_projection",
+                "subgraph_export"
+              ],
+              "storage": [
+                "Neo4j"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-monitoring-engine": {
+              "purpose": "Observability engine for metrics, worker health, and execution telemetry.",
               "interfaces": [
                 "queue:metrics",
                 "prometheus"
               ],
               "pipelines": [
-                "observability",
-                "slo_monitoring"
+                "telemetry_ingest",
+                "health_aggregation",
+                "slo_evaluation",
+                "alert_projection"
               ],
               "storage": [
                 "ElasticSearch"
               ],
               "scalability": "horizontal"
             },
-            {
-              "name": "rtf-worker-cluster",
-              "purpose": "Distributed worker execution for compute-heavy jobs",
-              "dependencies": [
-                "RabbitMQ",
-                "Redis"
+            "rtf-osint-engine": {
+              "purpose": "OSINT collection mesh for search, enrichment, and normalization across passive sources.",
+              "interfaces": [
+                "queue:osint"
               ],
+              "pipelines": [
+                "seed_normalization",
+                "search_collection",
+                "artifact_enrichment",
+                "entity_normalization"
+              ],
+              "storage": [
+                "ElasticSearch",
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-report-engine": {
+              "purpose": "Reporting engine for graph-backed findings, executive summaries, and artifact bundles.",
+              "interfaces": [
+                "queue:report",
+                "http"
+              ],
+              "pipelines": [
+                "finding_aggregation",
+                "timeline_render",
+                "graph_embed",
+                "report_emit"
+              ],
+              "storage": [
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-scraper-engine": {
+              "purpose": "Proxy-aware scraping engine for search, websites, and social artifacts.",
+              "interfaces": [
+                "queue:scrape"
+              ],
+              "pipelines": [
+                "request_plan",
+                "distributed_fetch",
+                "artifact_parse",
+                "cache_publish"
+              ],
+              "storage": [
+                "MinIO"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-socmint-engine": {
+              "purpose": "SOCMINT pipeline for persona fusion, recursive pivots, and timeline assembly.",
+              "interfaces": [
+                "queue:socmint"
+              ],
+              "pipelines": [
+                "handle_expansion",
+                "profile_correlation",
+                "timeline_build",
+                "relationship_scoring"
+              ],
+              "storage": [
+                "Neo4j",
+                "ElasticSearch"
+              ],
+              "scalability": "horizontal"
+            },
+            "rtf-worker-cluster": {
+              "purpose": "Distributed worker execution for compute-heavy jobs",
               "interfaces": [
                 "queue:worker"
               ],
@@ -817,221 +1129,6 @@
               ],
               "storage": [
                 "Redis",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            }
-          ],
-          "dependency_map": {
-            "rtf-core": [
-              "Redis",
-              "RabbitMQ"
-            ],
-            "rtf-osint-engine": [
-              "rtf-core",
-              "rtf-ingestion-engine"
-            ],
-            "rtf-socmint-engine": [
-              "rtf-osint-engine",
-              "rtf-ai-engine",
-              "rtf-graph-engine"
-            ],
-            "rtf-casm-engine": [
-              "rtf-core",
-              "rtf-report-engine"
-            ],
-            "rtf-credential-engine": [
-              "rtf-core",
-              "rtf-worker-cluster"
-            ],
-            "rtf-graph-engine": [
-              "Neo4j",
-              "rtf-ingestion-engine"
-            ],
-            "rtf-ai-engine": [
-              "rtf-graph-engine",
-              "rtf-core"
-            ],
-            "rtf-scraper-engine": [
-              "rtf-osint-engine"
-            ],
-            "rtf-wireless-engine": [
-              "rtf-core",
-              "rtf-ingestion-engine"
-            ],
-            "rtf-report-engine": [
-              "rtf-graph-engine",
-              "rtf-ai-engine"
-            ],
-            "rtf-ingestion-engine": [
-              "MinIO",
-              "ElasticSearch",
-              "Neo4j"
-            ],
-            "rtf-automation-engine": [
-              "rtf-core",
-              "rtf-worker-cluster"
-            ],
-            "rtf-monitoring-engine": [
-              "Prometheus",
-              "Grafana"
-            ],
-            "rtf-worker-cluster": [
-              "RabbitMQ",
-              "Redis"
-            ]
-          },
-          "service_catalog": {
-            "rtf-core": {
-              "purpose": "Shared config, auth, registry, orchestration entrypoint",
-              "interfaces": [
-                "cli",
-                "api",
-                "scheduler"
-              ],
-              "pipelines": [
-                "core_orchestration",
-                "legacy_compatibility"
-              ],
-              "storage": [
-                "Redis"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-osint-engine": {
-              "purpose": "Large-scale OSINT collection and normalization",
-              "interfaces": [
-                "queue:osint",
-                "http"
-              ],
-              "pipelines": [
-                "osint",
-                "multi_search",
-                "artifact_enrichment"
-              ],
-              "storage": [
-                "ElasticSearch",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-socmint-engine": {
-              "purpose": "15-stage SOCMINT pipeline execution",
-              "interfaces": [
-                "queue:socmint"
-              ],
-              "pipelines": [
-                "socmint",
-                "identity_resolution",
-                "recursive_pivoting"
-              ],
-              "storage": [
-                "Neo4j",
-                "ElasticSearch"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-casm-engine": {
-              "purpose": "Continuous attack surface management",
-              "interfaces": [
-                "queue:casm"
-              ],
-              "pipelines": [
-                "casm",
-                "external_surface_monitoring"
-              ],
-              "storage": [
-                "ElasticSearch"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-credential-engine": {
-              "purpose": "Breach intel and distributed cracking coordination",
-              "interfaces": [
-                "queue:credential"
-              ],
-              "pipelines": [
-                "credential_intel",
-                "hashcat_cluster",
-                "breach_correlation"
-              ],
-              "storage": [
-                "MinIO",
-                "ElasticSearch"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-graph-engine": {
-              "purpose": "Knowledge graph ingestion and relationship queries",
-              "interfaces": [
-                "queue:graph",
-                "bolt"
-              ],
-              "pipelines": [
-                "entity_correlation",
-                "graph_materialization"
-              ],
-              "storage": [
-                "Neo4j"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-ai-engine": {
-              "purpose": "Identity resolution, summarization, stylometry, and risk scoring",
-              "interfaces": [
-                "queue:ai"
-              ],
-              "pipelines": [
-                "identity_resolution",
-                "ai_summary",
-                "profile_clustering"
-              ],
-              "storage": [
-                "Redis",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-scraper-engine": {
-              "purpose": "Search and social scraping with proxy rotation",
-              "interfaces": [
-                "queue:scrape"
-              ],
-              "pipelines": [
-                "search_scraping",
-                "social_scraping",
-                "metadata_collection"
-              ],
-              "storage": [
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-wireless-engine": {
-              "purpose": "RF capture and wireless analysis coordination",
-              "interfaces": [
-                "queue:wireless"
-              ],
-              "pipelines": [
-                "sdr_intel",
-                "wireless_capture"
-              ],
-              "storage": [
-                "MinIO"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-report-engine": {
-              "purpose": "HTML, PDF, JSON, Markdown, XLSX report generation",
-              "interfaces": [
-                "queue:report"
-              ],
-              "pipelines": [
-                "reporting",
-                "timeline_rendering",
-                "graph_visualization"
-              ],
-              "storage": [
                 "MinIO"
               ],
               "scalability": "horizontal"
@@ -1052,50 +1149,6 @@
                 "Neo4j"
               ],
               "scalability": "horizontal"
-            },
-            "rtf-automation-engine": {
-              "purpose": "Workflow builder and template automation",
-              "interfaces": [
-                "queue:automation"
-              ],
-              "pipelines": [
-                "workflow_builder",
-                "scheduler_bridge"
-              ],
-              "storage": [
-                "Redis"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-monitoring-engine": {
-              "purpose": "Telemetry, metrics, and health aggregation",
-              "interfaces": [
-                "queue:metrics",
-                "prometheus"
-              ],
-              "pipelines": [
-                "observability",
-                "slo_monitoring"
-              ],
-              "storage": [
-                "ElasticSearch"
-              ],
-              "scalability": "horizontal"
-            },
-            "rtf-worker-cluster": {
-              "purpose": "Distributed worker execution for compute-heavy jobs",
-              "interfaces": [
-                "queue:worker"
-              ],
-              "pipelines": [
-                "parallel_jobs",
-                "fanout_execution"
-              ],
-              "storage": [
-                "Redis",
-                "MinIO"
-              ],
-              "scalability": "horizontal"
             }
           },
           "architecture_map": {
@@ -1104,7 +1157,8 @@
                 "rtf console",
                 "rtf module",
                 "rtf workflow",
-                "rtf titan"
+                "rtf titan",
+                "rtf engine"
               ],
               "api": [
                 "/health",
@@ -1133,7 +1187,8 @@
                 "identity_resolution",
                 "global_intelligence_graph",
                 "recursive_pivot_engine",
-                "distributed_reporting"
+                "distributed_reporting",
+                "engine_mesh_orchestration"
               ]
             },
             "data_plane": {
@@ -1152,78 +1207,102 @@
               ]
             },
             "services": {
-              "rtf-core": {
-                "purpose": "Shared config, auth, registry, orchestration entrypoint",
+              "rtf-ai-engine": {
+                "purpose": "AI correlation engine for identity resolution, prioritization, and summarization.",
                 "interfaces": [
-                  "cli",
-                  "api",
-                  "scheduler"
+                  "queue:ai"
                 ],
                 "pipelines": [
-                  "core_orchestration",
-                  "legacy_compatibility"
+                  "feature_extraction",
+                  "identity_resolution",
+                  "risk_scoring",
+                  "brief_generation"
+                ],
+                "storage": [
+                  "Redis",
+                  "MinIO"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-automation-engine": {
+                "purpose": "Automation engine for reusable async task pipelines and workflow templates.",
+                "interfaces": [
+                  "queue:automation"
+                ],
+                "pipelines": [
+                  "template_expand",
+                  "pipeline_compile",
+                  "worker_dispatch",
+                  "result_reduce"
                 ],
                 "storage": [
                   "Redis"
                 ],
                 "scalability": "horizontal"
               },
-              "rtf-osint-engine": {
-                "purpose": "Large-scale OSINT collection and normalization",
+              "rtf-breach-engine": {
+                "purpose": "Breach intelligence engine for leak ingestion, credential exposure scoring, and downstream pivots.",
                 "interfaces": [
-                  "queue:osint",
-                  "http"
+                  "queue:breach"
                 ],
                 "pipelines": [
-                  "osint",
-                  "multi_search",
-                  "artifact_enrichment"
+                  "leak_ingestion",
+                  "record_deduplication",
+                  "credential_exposure_scoring",
+                  "pivot_generation"
                 ],
                 "storage": [
                   "ElasticSearch",
-                  "MinIO"
-                ],
-                "scalability": "horizontal"
-              },
-              "rtf-socmint-engine": {
-                "purpose": "15-stage SOCMINT pipeline execution",
-                "interfaces": [
-                  "queue:socmint"
-                ],
-                "pipelines": [
-                  "socmint",
-                  "identity_resolution",
-                  "recursive_pivoting"
-                ],
-                "storage": [
-                  "Neo4j",
-                  "ElasticSearch"
+                  "MinIO",
+                  "Neo4j"
                 ],
                 "scalability": "horizontal"
               },
               "rtf-casm-engine": {
-                "purpose": "Continuous attack surface management",
+                "purpose": "Continuous attack surface management engine with discovery and drift tracking.",
                 "interfaces": [
                   "queue:casm"
                 ],
                 "pipelines": [
-                  "casm",
-                  "external_surface_monitoring"
+                  "asset_seed",
+                  "surface_discovery",
+                  "exposure_scoring",
+                  "drift_detection"
                 ],
                 "storage": [
-                  "ElasticSearch"
+                  "ElasticSearch",
+                  "Neo4j"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-core": {
+                "purpose": "Shared orchestration plane for configuration, module dispatch, scheduler bridging, and CLI bootstrap.",
+                "interfaces": [
+                  "cli",
+                  "api",
+                  "scheduler"
+                ],
+                "pipelines": [
+                  "config_load",
+                  "module_resolution",
+                  "queue_dispatch",
+                  "result_merge"
+                ],
+                "storage": [
+                  "Redis"
                 ],
                 "scalability": "horizontal"
               },
               "rtf-credential-engine": {
-                "purpose": "Breach intel and distributed cracking coordination",
+                "purpose": "Credential attack coordination engine for sprays, cracking, and reuse analysis.",
                 "interfaces": [
                   "queue:credential"
                 ],
                 "pipelines": [
-                  "credential_intel",
-                  "hashcat_cluster",
-                  "breach_correlation"
+                  "candidate_generation",
+                  "reuse_analysis",
+                  "distributed_cracking",
+                  "result_enrichment"
                 ],
                 "storage": [
                   "MinIO",
@@ -1232,76 +1311,117 @@
                 "scalability": "horizontal"
               },
               "rtf-graph-engine": {
-                "purpose": "Knowledge graph ingestion and relationship queries",
+                "purpose": "Graph intelligence storage and relationship query layer for distributed investigations.",
                 "interfaces": [
                   "queue:graph",
                   "bolt"
                 ],
                 "pipelines": [
-                  "entity_correlation",
-                  "graph_materialization"
+                  "entity_ingest",
+                  "edge_materialization",
+                  "query_projection",
+                  "subgraph_export"
                 ],
                 "storage": [
                   "Neo4j"
                 ],
                 "scalability": "horizontal"
               },
-              "rtf-ai-engine": {
-                "purpose": "Identity resolution, summarization, stylometry, and risk scoring",
+              "rtf-monitoring-engine": {
+                "purpose": "Observability engine for metrics, worker health, and execution telemetry.",
                 "interfaces": [
-                  "queue:ai"
+                  "queue:metrics",
+                  "prometheus"
                 ],
                 "pipelines": [
-                  "identity_resolution",
-                  "ai_summary",
-                  "profile_clustering"
+                  "telemetry_ingest",
+                  "health_aggregation",
+                  "slo_evaluation",
+                  "alert_projection"
                 ],
                 "storage": [
-                  "Redis",
-                  "MinIO"
+                  "ElasticSearch"
                 ],
                 "scalability": "horizontal"
               },
-              "rtf-scraper-engine": {
-                "purpose": "Search and social scraping with proxy rotation",
+              "rtf-osint-engine": {
+                "purpose": "OSINT collection mesh for search, enrichment, and normalization across passive sources.",
                 "interfaces": [
-                  "queue:scrape"
+                  "queue:osint"
                 ],
                 "pipelines": [
-                  "search_scraping",
-                  "social_scraping",
-                  "metadata_collection"
+                  "seed_normalization",
+                  "search_collection",
+                  "artifact_enrichment",
+                  "entity_normalization"
                 ],
                 "storage": [
-                  "MinIO"
-                ],
-                "scalability": "horizontal"
-              },
-              "rtf-wireless-engine": {
-                "purpose": "RF capture and wireless analysis coordination",
-                "interfaces": [
-                  "queue:wireless"
-                ],
-                "pipelines": [
-                  "sdr_intel",
-                  "wireless_capture"
-                ],
-                "storage": [
+                  "ElasticSearch",
                   "MinIO"
                 ],
                 "scalability": "horizontal"
               },
               "rtf-report-engine": {
-                "purpose": "HTML, PDF, JSON, Markdown, XLSX report generation",
+                "purpose": "Reporting engine for graph-backed findings, executive summaries, and artifact bundles.",
                 "interfaces": [
-                  "queue:report"
+                  "queue:report",
+                  "http"
                 ],
                 "pipelines": [
-                  "reporting",
-                  "timeline_rendering",
-                  "graph_visualization"
+                  "finding_aggregation",
+                  "timeline_render",
+                  "graph_embed",
+                  "report_emit"
                 ],
                 "storage": [
+                  "MinIO"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-scraper-engine": {
+                "purpose": "Proxy-aware scraping engine for search, websites, and social artifacts.",
+                "interfaces": [
+                  "queue:scrape"
+                ],
+                "pipelines": [
+                  "request_plan",
+                  "distributed_fetch",
+                  "artifact_parse",
+                  "cache_publish"
+                ],
+                "storage": [
+                  "MinIO"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-socmint-engine": {
+                "purpose": "SOCMINT pipeline for persona fusion, recursive pivots, and timeline assembly.",
+                "interfaces": [
+                  "queue:socmint"
+                ],
+                "pipelines": [
+                  "handle_expansion",
+                  "profile_correlation",
+                  "timeline_build",
+                  "relationship_scoring"
+                ],
+                "storage": [
+                  "Neo4j",
+                  "ElasticSearch"
+                ],
+                "scalability": "horizontal"
+              },
+              "rtf-worker-cluster": {
+                "purpose": "Distributed worker execution for compute-heavy jobs",
+                "interfaces": [
+                  "queue:worker"
+                ],
+                "pipelines": [
+                  "parallel_jobs",
+                  "fanout_execution"
+                ],
+                "storage": [
+                  "Redis",
                   "MinIO"
                 ],
                 "scalability": "horizontal"
@@ -1322,56 +1442,662 @@
                   "Neo4j"
                 ],
                 "scalability": "horizontal"
+              }
+            },
+            "engine_mesh": {
+              "engines": [
+                {
+                  "name": "rtf-ai-engine",
+                  "category": "architecture",
+                  "description": "AI correlation engine for identity resolution, prioritization, and summarization.",
+                  "module_path": "architecture/rtf_ai_engine",
+                  "cli_alias": "ai",
+                  "queue": "queue:ai",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-graph-engine"
+                  ],
+                  "task_pipeline": [
+                    "feature_extraction",
+                    "identity_resolution",
+                    "risk_scoring",
+                    "brief_generation"
+                  ],
+                  "worker_roles": [
+                    "inference-worker",
+                    "ranking-worker"
+                  ],
+                  "graph_capabilities": [
+                    "entity_embeddings",
+                    "attack_path_summaries"
+                  ],
+                  "tool_wrappers": [
+                    "decision_engine",
+                    "goal_engine",
+                    "attack_path_generator"
+                  ],
+                  "scheduler_hooks": [
+                    "adaptive_priority",
+                    "feedback_loop"
+                  ]
+                },
+                {
+                  "name": "rtf-automation-engine",
+                  "category": "architecture",
+                  "description": "Automation engine for reusable async task pipelines and workflow templates.",
+                  "module_path": "architecture/rtf_automation_engine",
+                  "cli_alias": "automation",
+                  "queue": "queue:automation",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-monitoring-engine"
+                  ],
+                  "task_pipeline": [
+                    "template_expand",
+                    "pipeline_compile",
+                    "worker_dispatch",
+                    "result_reduce"
+                  ],
+                  "worker_roles": [
+                    "pipeline-worker",
+                    "template-worker"
+                  ],
+                  "graph_capabilities": [
+                    "workflow_lineage"
+                  ],
+                  "tool_wrappers": [
+                    "workflow_engine",
+                    "pipeline_v2",
+                    "advanced_pipeline"
+                  ],
+                  "scheduler_hooks": [
+                    "cron_bridge",
+                    "dependency_graph"
+                  ]
+                },
+                {
+                  "name": "rtf-breach-engine",
+                  "category": "architecture",
+                  "description": "Breach intelligence engine for leak ingestion, credential exposure scoring, and downstream pivots.",
+                  "module_path": "architecture/rtf_breach_engine",
+                  "cli_alias": "breach",
+                  "queue": "queue:breach",
+                  "dependencies": [
+                    "rtf-osint-engine",
+                    "rtf-credential-engine",
+                    "rtf-graph-engine"
+                  ],
+                  "task_pipeline": [
+                    "leak_ingestion",
+                    "record_deduplication",
+                    "credential_exposure_scoring",
+                    "pivot_generation"
+                  ],
+                  "worker_roles": [
+                    "breach-worker",
+                    "dedupe-worker"
+                  ],
+                  "graph_capabilities": [
+                    "breach_nodes",
+                    "exposure_relationships"
+                  ],
+                  "tool_wrappers": [
+                    "breach_correlation",
+                    "credential_intelligence"
+                  ],
+                  "scheduler_hooks": [
+                    "delta_sync",
+                    "severity_escalation"
+                  ]
+                },
+                {
+                  "name": "rtf-casm-engine",
+                  "category": "architecture",
+                  "description": "Continuous attack surface management engine with discovery and drift tracking.",
+                  "module_path": "architecture/rtf_casm_engine",
+                  "cli_alias": "casm",
+                  "queue": "queue:casm",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-graph-engine",
+                    "rtf-monitoring-engine"
+                  ],
+                  "task_pipeline": [
+                    "asset_seed",
+                    "surface_discovery",
+                    "exposure_scoring",
+                    "drift_detection"
+                  ],
+                  "worker_roles": [
+                    "surface-worker",
+                    "drift-worker"
+                  ],
+                  "graph_capabilities": [
+                    "asset_inventory",
+                    "service_exposure_edges"
+                  ],
+                  "tool_wrappers": [
+                    "casm_pipeline",
+                    "subdomain_enum",
+                    "port_scan"
+                  ],
+                  "scheduler_hooks": [
+                    "continuous_scan",
+                    "snapshot_diff"
+                  ]
+                },
+                {
+                  "name": "rtf-core",
+                  "category": "architecture",
+                  "description": "Shared orchestration plane for configuration, module dispatch, scheduler bridging, and CLI bootstrap.",
+                  "module_path": "architecture/rtf_core_engine",
+                  "cli_alias": "core",
+                  "queue": "queue:core",
+                  "dependencies": [
+                    "rtf-automation-engine",
+                    "rtf-monitoring-engine"
+                  ],
+                  "task_pipeline": [
+                    "config_load",
+                    "module_resolution",
+                    "queue_dispatch",
+                    "result_merge"
+                  ],
+                  "worker_roles": [
+                    "coordinator",
+                    "api-gateway"
+                  ],
+                  "graph_capabilities": [
+                    "operation_context",
+                    "engine_lineage"
+                  ],
+                  "tool_wrappers": [
+                    "module_loader",
+                    "tool_registry",
+                    "workflow_registry"
+                  ],
+                  "scheduler_hooks": [
+                    "job_submission",
+                    "priority_routing",
+                    "retry_policy"
+                  ]
+                },
+                {
+                  "name": "rtf-credential-engine",
+                  "category": "architecture",
+                  "description": "Credential attack coordination engine for sprays, cracking, and reuse analysis.",
+                  "module_path": "architecture/rtf_credential_engine",
+                  "cli_alias": "credential",
+                  "queue": "queue:credential",
+                  "dependencies": [
+                    "rtf-breach-engine",
+                    "rtf-core"
+                  ],
+                  "task_pipeline": [
+                    "candidate_generation",
+                    "reuse_analysis",
+                    "distributed_cracking",
+                    "result_enrichment"
+                  ],
+                  "worker_roles": [
+                    "spray-worker",
+                    "cracker-worker"
+                  ],
+                  "graph_capabilities": [
+                    "credential_nodes",
+                    "reuse_edges"
+                  ],
+                  "tool_wrappers": [
+                    "credential_intelligence",
+                    "credential_reuse_analyzer",
+                    "hash_crack"
+                  ],
+                  "scheduler_hooks": [
+                    "worker_sharding",
+                    "cooldown_windows"
+                  ]
+                },
+                {
+                  "name": "rtf-graph-engine",
+                  "category": "architecture",
+                  "description": "Graph intelligence storage and relationship query layer for distributed investigations.",
+                  "module_path": "architecture/rtf_graph_engine",
+                  "cli_alias": "graph",
+                  "queue": "queue:graph",
+                  "dependencies": [
+                    "rtf-core"
+                  ],
+                  "task_pipeline": [
+                    "entity_ingest",
+                    "edge_materialization",
+                    "query_projection",
+                    "subgraph_export"
+                  ],
+                  "worker_roles": [
+                    "graph-writer",
+                    "query-worker"
+                  ],
+                  "graph_capabilities": [
+                    "neo4j_sync",
+                    "sqlite_cache",
+                    "path_analysis"
+                  ],
+                  "tool_wrappers": [
+                    "graph_builder",
+                    "relationship_engine",
+                    "knowledge_graph"
+                  ],
+                  "scheduler_hooks": [
+                    "graph_flush",
+                    "query_batching"
+                  ]
+                },
+                {
+                  "name": "rtf-monitoring-engine",
+                  "category": "architecture",
+                  "description": "Observability engine for metrics, worker health, and execution telemetry.",
+                  "module_path": "architecture/rtf_monitoring_engine",
+                  "cli_alias": "monitoring",
+                  "queue": "queue:metrics",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-automation-engine"
+                  ],
+                  "task_pipeline": [
+                    "telemetry_ingest",
+                    "health_aggregation",
+                    "slo_evaluation",
+                    "alert_projection"
+                  ],
+                  "worker_roles": [
+                    "metrics-worker",
+                    "alert-worker"
+                  ],
+                  "graph_capabilities": [
+                    "service_health_overlays"
+                  ],
+                  "tool_wrappers": [
+                    "scheduler",
+                    "tool_registry",
+                    "report_engine"
+                  ],
+                  "scheduler_hooks": [
+                    "heartbeat",
+                    "queue_depth_sampling"
+                  ]
+                },
+                {
+                  "name": "rtf-osint-engine",
+                  "category": "architecture",
+                  "description": "OSINT collection mesh for search, enrichment, and normalization across passive sources.",
+                  "module_path": "architecture/rtf_osint_engine",
+                  "cli_alias": "osint",
+                  "queue": "queue:osint",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-scraper-engine",
+                    "rtf-graph-engine"
+                  ],
+                  "task_pipeline": [
+                    "seed_normalization",
+                    "search_collection",
+                    "artifact_enrichment",
+                    "entity_normalization"
+                  ],
+                  "worker_roles": [
+                    "search-worker",
+                    "enrichment-worker"
+                  ],
+                  "graph_capabilities": [
+                    "identity_nodes",
+                    "evidence_edges"
+                  ],
+                  "tool_wrappers": [
+                    "web_search_scraper",
+                    "shodan_search",
+                    "username_enum"
+                  ],
+                  "scheduler_hooks": [
+                    "fanout_collection",
+                    "source_backoff"
+                  ]
+                },
+                {
+                  "name": "rtf-report-engine",
+                  "category": "architecture",
+                  "description": "Reporting engine for graph-backed findings, executive summaries, and artifact bundles.",
+                  "module_path": "architecture/rtf_report_engine",
+                  "cli_alias": "report",
+                  "queue": "queue:report",
+                  "dependencies": [
+                    "rtf-graph-engine",
+                    "rtf-ai-engine",
+                    "rtf-monitoring-engine"
+                  ],
+                  "task_pipeline": [
+                    "finding_aggregation",
+                    "timeline_render",
+                    "graph_embed",
+                    "report_emit"
+                  ],
+                  "worker_roles": [
+                    "report-worker",
+                    "render-worker"
+                  ],
+                  "graph_capabilities": [
+                    "graph_export",
+                    "timeline_rendering"
+                  ],
+                  "tool_wrappers": [
+                    "report_engine",
+                    "json_reporter",
+                    "pdf_reporter"
+                  ],
+                  "scheduler_hooks": [
+                    "scheduled_exports",
+                    "artifact_retention"
+                  ]
+                },
+                {
+                  "name": "rtf-scraper-engine",
+                  "category": "architecture",
+                  "description": "Proxy-aware scraping engine for search, websites, and social artifacts.",
+                  "module_path": "architecture/rtf_scraper_engine",
+                  "cli_alias": "scraper",
+                  "queue": "queue:scrape",
+                  "dependencies": [
+                    "rtf-core",
+                    "rtf-osint-engine"
+                  ],
+                  "task_pipeline": [
+                    "request_plan",
+                    "distributed_fetch",
+                    "artifact_parse",
+                    "cache_publish"
+                  ],
+                  "worker_roles": [
+                    "fetch-worker",
+                    "parser-worker"
+                  ],
+                  "graph_capabilities": [
+                    "artifact_provenance"
+                  ],
+                  "tool_wrappers": [
+                    "web_search_scraper",
+                    "email_harvest",
+                    "tech_stack_fingerprinter"
+                  ],
+                  "scheduler_hooks": [
+                    "rate_limit_budget",
+                    "proxy_rotation"
+                  ]
+                },
+                {
+                  "name": "rtf-socmint-engine",
+                  "category": "architecture",
+                  "description": "SOCMINT pipeline for persona fusion, recursive pivots, and timeline assembly.",
+                  "module_path": "architecture/rtf_socmint_engine",
+                  "cli_alias": "socmint",
+                  "queue": "queue:socmint",
+                  "dependencies": [
+                    "rtf-osint-engine",
+                    "rtf-ai-engine",
+                    "rtf-graph-engine"
+                  ],
+                  "task_pipeline": [
+                    "handle_expansion",
+                    "profile_correlation",
+                    "timeline_build",
+                    "relationship_scoring"
+                  ],
+                  "worker_roles": [
+                    "persona-worker",
+                    "timeline-worker"
+                  ],
+                  "graph_capabilities": [
+                    "social_graph",
+                    "timeline_edges"
+                  ],
+                  "tool_wrappers": [
+                    "identity_fusion",
+                    "identity_fusion_extreme",
+                    "nexus_identity_pipeline"
+                  ],
+                  "scheduler_hooks": [
+                    "recursive_pivots",
+                    "stage_barriers"
+                  ]
+                }
+              ],
+              "queues": {
+                "rtf-ai-engine": "queue:ai",
+                "rtf-automation-engine": "queue:automation",
+                "rtf-breach-engine": "queue:breach",
+                "rtf-casm-engine": "queue:casm",
+                "rtf-core": "queue:core",
+                "rtf-credential-engine": "queue:credential",
+                "rtf-graph-engine": "queue:graph",
+                "rtf-monitoring-engine": "queue:metrics",
+                "rtf-osint-engine": "queue:osint",
+                "rtf-report-engine": "queue:report",
+                "rtf-scraper-engine": "queue:scrape",
+                "rtf-socmint-engine": "queue:socmint"
               },
-              "rtf-automation-engine": {
-                "purpose": "Workflow builder and template automation",
-                "interfaces": [
-                  "queue:automation"
+              "distributed_workers": {
+                "rtf-ai-engine": [
+                  "inference-worker",
+                  "ranking-worker"
                 ],
-                "pipelines": [
-                  "workflow_builder",
-                  "scheduler_bridge"
+                "rtf-automation-engine": [
+                  "pipeline-worker",
+                  "template-worker"
                 ],
-                "storage": [
-                  "Redis"
+                "rtf-breach-engine": [
+                  "breach-worker",
+                  "dedupe-worker"
                 ],
-                "scalability": "horizontal"
+                "rtf-casm-engine": [
+                  "surface-worker",
+                  "drift-worker"
+                ],
+                "rtf-core": [
+                  "coordinator",
+                  "api-gateway"
+                ],
+                "rtf-credential-engine": [
+                  "spray-worker",
+                  "cracker-worker"
+                ],
+                "rtf-graph-engine": [
+                  "graph-writer",
+                  "query-worker"
+                ],
+                "rtf-monitoring-engine": [
+                  "metrics-worker",
+                  "alert-worker"
+                ],
+                "rtf-osint-engine": [
+                  "search-worker",
+                  "enrichment-worker"
+                ],
+                "rtf-report-engine": [
+                  "report-worker",
+                  "render-worker"
+                ],
+                "rtf-scraper-engine": [
+                  "fetch-worker",
+                  "parser-worker"
+                ],
+                "rtf-socmint-engine": [
+                  "persona-worker",
+                  "timeline-worker"
+                ]
               },
-              "rtf-monitoring-engine": {
-                "purpose": "Telemetry, metrics, and health aggregation",
-                "interfaces": [
-                  "queue:metrics",
-                  "prometheus"
+              "graph_intelligence": {
+                "rtf-ai-engine": [
+                  "entity_embeddings",
+                  "attack_path_summaries"
                 ],
-                "pipelines": [
-                  "observability",
-                  "slo_monitoring"
+                "rtf-automation-engine": [
+                  "workflow_lineage"
                 ],
-                "storage": [
-                  "ElasticSearch"
+                "rtf-breach-engine": [
+                  "breach_nodes",
+                  "exposure_relationships"
                 ],
-                "scalability": "horizontal"
+                "rtf-casm-engine": [
+                  "asset_inventory",
+                  "service_exposure_edges"
+                ],
+                "rtf-core": [
+                  "operation_context",
+                  "engine_lineage"
+                ],
+                "rtf-credential-engine": [
+                  "credential_nodes",
+                  "reuse_edges"
+                ],
+                "rtf-graph-engine": [
+                  "neo4j_sync",
+                  "sqlite_cache",
+                  "path_analysis"
+                ],
+                "rtf-monitoring-engine": [
+                  "service_health_overlays"
+                ],
+                "rtf-osint-engine": [
+                  "identity_nodes",
+                  "evidence_edges"
+                ],
+                "rtf-report-engine": [
+                  "graph_export",
+                  "timeline_rendering"
+                ],
+                "rtf-scraper-engine": [
+                  "artifact_provenance"
+                ],
+                "rtf-socmint-engine": [
+                  "social_graph",
+                  "timeline_edges"
+                ]
               },
-              "rtf-worker-cluster": {
-                "purpose": "Distributed worker execution for compute-heavy jobs",
-                "interfaces": [
-                  "queue:worker"
+              "tool_wrappers": {
+                "rtf-ai-engine": [
+                  "decision_engine",
+                  "goal_engine",
+                  "attack_path_generator"
                 ],
-                "pipelines": [
-                  "parallel_jobs",
-                  "fanout_execution"
+                "rtf-automation-engine": [
+                  "workflow_engine",
+                  "pipeline_v2",
+                  "advanced_pipeline"
                 ],
-                "storage": [
-                  "Redis",
-                  "MinIO"
+                "rtf-breach-engine": [
+                  "breach_correlation",
+                  "credential_intelligence"
                 ],
-                "scalability": "horizontal"
+                "rtf-casm-engine": [
+                  "casm_pipeline",
+                  "subdomain_enum",
+                  "port_scan"
+                ],
+                "rtf-core": [
+                  "module_loader",
+                  "tool_registry",
+                  "workflow_registry"
+                ],
+                "rtf-credential-engine": [
+                  "credential_intelligence",
+                  "credential_reuse_analyzer",
+                  "hash_crack"
+                ],
+                "rtf-graph-engine": [
+                  "graph_builder",
+                  "relationship_engine",
+                  "knowledge_graph"
+                ],
+                "rtf-monitoring-engine": [
+                  "scheduler",
+                  "tool_registry",
+                  "report_engine"
+                ],
+                "rtf-osint-engine": [
+                  "web_search_scraper",
+                  "shodan_search",
+                  "username_enum"
+                ],
+                "rtf-report-engine": [
+                  "report_engine",
+                  "json_reporter",
+                  "pdf_reporter"
+                ],
+                "rtf-scraper-engine": [
+                  "web_search_scraper",
+                  "email_harvest",
+                  "tech_stack_fingerprinter"
+                ],
+                "rtf-socmint-engine": [
+                  "identity_fusion",
+                  "identity_fusion_extreme",
+                  "nexus_identity_pipeline"
+                ]
+              },
+              "scheduler": {
+                "rtf-ai-engine": [
+                  "adaptive_priority",
+                  "feedback_loop"
+                ],
+                "rtf-automation-engine": [
+                  "cron_bridge",
+                  "dependency_graph"
+                ],
+                "rtf-breach-engine": [
+                  "delta_sync",
+                  "severity_escalation"
+                ],
+                "rtf-casm-engine": [
+                  "continuous_scan",
+                  "snapshot_diff"
+                ],
+                "rtf-core": [
+                  "job_submission",
+                  "priority_routing",
+                  "retry_policy"
+                ],
+                "rtf-credential-engine": [
+                  "worker_sharding",
+                  "cooldown_windows"
+                ],
+                "rtf-graph-engine": [
+                  "graph_flush",
+                  "query_batching"
+                ],
+                "rtf-monitoring-engine": [
+                  "heartbeat",
+                  "queue_depth_sampling"
+                ],
+                "rtf-osint-engine": [
+                  "fanout_collection",
+                  "source_backoff"
+                ],
+                "rtf-report-engine": [
+                  "scheduled_exports",
+                  "artifact_retention"
+                ],
+                "rtf-scraper-engine": [
+                  "rate_limit_budget",
+                  "proxy_rotation"
+                ],
+                "rtf-socmint-engine": [
+                  "recursive_pivots",
+                  "stage_barriers"
+                ]
               }
             }
           },
           "extension_points": {
             "cli": [
-              "Add titan subcommands without impacting legacy commands"
+              "Add titan and engine subcommands without impacting legacy commands"
             ],
             "api": [
               "Expose distributed service topology and queue status endpoints"
@@ -1380,10 +2106,10 @@
               "Add graph explorer, workflow monitor, live logs, and service health cards"
             ],
             "workflow_engine": [
-              "Register TITAN pipelines through the existing workflow registry"
+              "Register engine-driven pipelines through the existing workflow registry"
             ],
             "module_system": [
-              "Wrap external tools with universal TITAN wrappers"
+              "Wrap architecture engines as BaseModule-compatible modules"
             ],
             "reporting": [
               "Feed graph, AI, and evidence timelines into existing reporting engine"

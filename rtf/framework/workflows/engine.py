@@ -256,6 +256,23 @@ class SSLWebReconWorkflow(Workflow):
         ]
 
 
+class EngineMeshWorkflow(Workflow):
+    name = "engine_mesh"; description = "Architecture mesh workflow that exercises the distributed engine registry through module-compatible engine adapters."
+    def steps(self) -> List[Step]:
+        from framework.modules.architecture.rtf_core_engine import RtfCoreEngineModule
+        from framework.modules.architecture.rtf_osint_engine import RtfOsintEngineModule
+        from framework.modules.architecture.rtf_graph_engine import RtfGraphEngineModule
+        from framework.modules.architecture.rtf_ai_engine import RtfAiEngineModule
+        from framework.modules.architecture.rtf_report_engine import RtfReportEngineModule
+        return [
+            Step(name="core_orchestration", module_class=RtfCoreEngineModule, required=True),
+            Step(name="osint_collection", module_class=RtfOsintEngineModule, required=False),
+            Step(name="graph_intelligence", module_class=RtfGraphEngineModule, required=False),
+            Step(name="ai_correlation", module_class=RtfAiEngineModule, required=False),
+            Step(name="report_synthesis", module_class=RtfReportEngineModule, required=False),
+        ]
+
+
 BUILTIN_WORKFLOWS: Dict[str, type] = {
     "full_recon": FullReconWorkflow,
     "ad_attack": ADAttackWorkflow,
@@ -265,6 +282,7 @@ BUILTIN_WORKFLOWS: Dict[str, type] = {
     "cloud_audit": CloudAuditWorkflow,
     "full_ad_compromise": FullADCompromiseWorkflow,
     "ssl_web_recon": SSLWebReconWorkflow,
+    "engine_mesh": EngineMeshWorkflow,
 }
 
 class WorkflowBuilder:
