@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RedTeam Framework (RTF) v2.0 — Main Entry Point
+RedTeam Framework (RTF) v4.0 OMEGA — Main Entry Point
 
 Usage:
   rtf console                    — Interactive operator console (Metasploit-style)
@@ -15,7 +15,7 @@ Usage:
   rtf findings                   — Show recent findings
   rtf report [fmt] [output]      — Generate a report
   rtf version                    — Print version
-  rtf titan [manifest|health|investigate] — TITAN distributed architecture tools
+  rtf titan [manifest|health|schema|investigate] — TITAN distributed architecture tools
 """
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def _early_path_fix() -> None:
         os.environ["PATH"] = ":".join(new_parts) + ":" + os.environ.get("PATH", "")
 
 _early_path_fix()
-VERSION = "2.0.0"
+VERSION = "4.0.0-omega"
 
 
 def _init_framework() -> None:
@@ -208,11 +208,13 @@ def cmd_report(args: argparse.Namespace) -> None:
 
 def cmd_titan(args: argparse.Namespace) -> None:
     _init_framework()
-    from framework.titan import TitanOrchestrator, build_titan_manifest
+    from framework.titan import TitanKnowledgeGraph, TitanOrchestrator, build_titan_manifest
     if args.titan_subcommand == "manifest":
         print(json.dumps(build_titan_manifest(), indent=2))
     elif args.titan_subcommand == "health":
         print(json.dumps(TitanOrchestrator().health(), indent=2))
+    elif args.titan_subcommand == "schema":
+        print(json.dumps(TitanKnowledgeGraph().schema(), indent=2))
     elif args.titan_subcommand == "investigate":
         seed = json.loads(args.options) if args.options else {}
         result = asyncio.run(TitanOrchestrator().run_investigation(seed))
@@ -221,7 +223,7 @@ def cmd_titan(args: argparse.Namespace) -> None:
 
 def cmd_version(_args: argparse.Namespace) -> None:
     print(f"RedTeam Framework v{VERSION}")
-    print("Enterprise RedTeam Platform — For Authorized Testing Only")
+    print("Enterprise RedTeam OMEGA Intelligence Platform")
 
 
 # ── Argument parser ───────────────────────────────────────────────────────────
@@ -280,6 +282,7 @@ def build_parser() -> argparse.ArgumentParser:
     titan_subs = titan_p.add_subparsers(dest="titan_subcommand")
     titan_subs.add_parser("manifest")
     titan_subs.add_parser("health")
+    titan_subs.add_parser("schema")
     ti = titan_subs.add_parser("investigate")
     ti.add_argument("--options", default="{}")
 

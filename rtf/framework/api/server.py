@@ -23,7 +23,7 @@ from framework.modules.loader import module_loader
 from framework.registry.tool_registry import ToolCategory, tool_registry
 from framework.reporting.engine import Finding as ReportFinding, ReportEngine
 from framework.scheduler.scheduler import JobStatus, scheduler
-from framework.titan import TitanOrchestrator, build_titan_manifest
+from framework.titan import TitanKnowledgeGraph, TitanOrchestrator, build_titan_manifest
 from framework.titan.knowledge_graph import ENTITY_TYPES, RELATIONSHIP_TYPES
 from framework.titan.socmint_pipeline import SOCMINT_STAGES, TitanSOCMINTPipeline
 from framework.workflows.engine import BUILTIN_WORKFLOWS, get_workflow
