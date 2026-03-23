@@ -49,6 +49,12 @@ stages:
   input:
     seed: repository
   required: false
+- name: entity_resolution
+  module: entity-resolution
+  tool: entity-resolution
+  input:
+    seed: repository
+  required: false
 output:
   formats:
   - json
