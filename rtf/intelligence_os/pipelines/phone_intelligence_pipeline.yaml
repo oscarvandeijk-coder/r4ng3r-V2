@@ -48,6 +48,12 @@ stages:
   input:
     seed: phone
   required: false
+- name: entity_resolution
+  module: entity-resolution
+  tool: entity-resolution
+  input:
+    seed: phone
+  required: false
 output:
   formats:
   - json

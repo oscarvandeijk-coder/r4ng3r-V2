@@ -5,6 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from fastapi.testclient import TestClient
 
+from intelligence_os.analysis.validator import FrameworkValidator
 from intelligence_os.api.app import create_app
 from intelligence_os.automation.autonomous import AutonomousInvestigationEngine
 from intelligence_os.pipeline.engine import PipelineEngine
@@ -29,6 +30,8 @@ def test_pipeline_execution_graph_population():
     assert 'holehe' in result.executed_modules
     assert result.graph_writes > 0
     assert result.context['risk_score'] >= 0.2
+    assert result.context['stage_results']
+    assert result.context['recommended_next_steps']
 
 
 def test_workflow_and_autonomous_investigation():
@@ -42,11 +45,23 @@ def test_workflow_and_autonomous_investigation():
     assert auto_result['runs']
 
 
+def test_validation_and_module_pack_generation_are_integrated():
+    report = FrameworkValidator().validate()
+    assert report.status == 'ok'
+    assert report.metrics['module_packs'] >= 50
+    assert report.metrics['complete_module_packs'] >= 50
+    assert report.metrics['total_pipelines'] >= 60
+    assert min(report.metrics['stage_counts'].values()) >= 8
+
+
 def test_api_endpoints_expose_analysis_and_pipeline_inventory():
     client = TestClient(create_app())
     assert client.get('/intelligence-os/health').status_code == 200
     assert client.get('/intelligence-os/tools').json()['summary']['total_tools'] >= 500
     assert len(client.get('/intelligence-os/pipelines').json()['pipelines']) >= 60
     assert client.get('/intelligence-os/analysis').status_code == 200
+    assert client.get('/intelligence-os/validation').json()['status'] == 'ok'
+    assert client.get('/intelligence-os/workflows').status_code == 200
     pipeline_resp = client.post('/intelligence-os/pipelines/email_intelligence_pipeline/run', json={'email': 'target@example.com'})
     assert pipeline_resp.status_code == 200
+    assert pipeline_resp.json()['stage_results']
