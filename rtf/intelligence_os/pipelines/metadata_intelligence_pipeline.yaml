@@ -1,0 +1,9 @@
+name: metadata_intelligence_pipeline
+input: {type: file}
+stages:
+  - module: exiftool
+    input: {file: file}
+output:
+  entities: [metadata, locations, emails]
+graph:
+  relationships: [document -> location, document -> email]

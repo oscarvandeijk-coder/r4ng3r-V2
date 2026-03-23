@@ -1,0 +1,9 @@
+name: phone_intelligence_pipeline
+input: {type: phone}
+stages:
+  - module: phoneinfoga
+    input: {phone: phone}
+output:
+  entities: [phones, carriers]
+graph:
+  relationships: [phone -> organization]

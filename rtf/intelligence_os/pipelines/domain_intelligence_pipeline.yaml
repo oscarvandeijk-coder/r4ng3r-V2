@@ -1,0 +1,15 @@
+name: domain_intelligence_pipeline
+input: {type: domain}
+stages:
+  - module: amass
+    input: {domain: domain}
+    transformations: [extract_domains]
+  - module: httpx
+    input: {domain: domain}
+  - module: shodan
+    input: {ip: ip}
+    required: false
+output:
+  entities: [subdomains, ips, services]
+graph:
+  relationships: [domain -> subdomain, domain -> ip]

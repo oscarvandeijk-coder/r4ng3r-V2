@@ -1,0 +1,14 @@
+name: identity_intelligence_pipeline
+input: {type: person}
+stages:
+  - module: sherlock
+    input: {username: username}
+    transformations: [extract_accounts]
+  - module: holehe
+    input: {email: email}
+  - module: amass
+    input: {domain: domain}
+output:
+  entities: [accounts, emails, domains]
+graph:
+  relationships: [person -> account, person -> email, person -> domain]

@@ -1,0 +1,13 @@
+name: geoint_intelligence_pipeline
+input: {type: location}
+stages:
+  - module: openstreetmap
+    input: {location: location}
+    required: false
+  - module: sentinel-hub
+    input: {location: location}
+    required: false
+output:
+  entities: [locations, imagery]
+graph:
+  relationships: [location -> location]

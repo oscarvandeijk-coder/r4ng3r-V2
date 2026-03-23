@@ -1,0 +1,15 @@
+name: threat_actor_profiling_pipeline
+input: {type: person}
+stages:
+  - module: sherlock
+    input: {username: username}
+  - module: dehashed
+    input: {query: email}
+    required: false
+  - module: onionsearch
+    input: {query: keyword}
+    required: false
+output:
+  entities: [accounts, breaches, onion_mentions]
+graph:
+  relationships: [person -> account, person -> breach, person -> onion_service]

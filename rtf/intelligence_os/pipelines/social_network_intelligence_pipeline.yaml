@@ -1,0 +1,12 @@
+name: social_network_intelligence_pipeline
+input: {type: username}
+stages:
+  - module: sherlock
+    input: {username: username}
+  - module: twint
+    input: {username: username}
+    required: false
+output:
+  entities: [accounts, posts]
+graph:
+  relationships: [username -> account, account -> account]
