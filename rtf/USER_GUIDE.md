@@ -22,6 +22,32 @@
 13. [Building Custom Workflows](#13-building-custom-workflows)
 14. [Engagement Workflow — Step by Step](#14-engagement-workflow--step-by-step)
 15. [Troubleshooting](#15-troubleshooting)
+16. [TITAN & Upgrade Surfaces](#16-titan--upgrade-surfaces)
+17. [Documentation Map & Operator Checklist](#17-documentation-map--operator-checklist)
+
+---
+
+## Documentation updates in this release
+
+This guide has been refreshed to align the operator docs with the current repo structure and the TITAN / upgrade layers.
+
+New or expanded areas in this guide:
+
+- clearer install and first-run validation flow
+- stronger separation between console, API, dashboard, and workflow usage
+- explicit references to the TITAN architecture layer and V4 upgrade pipeline
+- improved guidance for choosing between direct modules, workflows, and SOCMINT playbooks
+
+### Recommended learning path
+
+If you are onboarding a new operator, use this order:
+
+1. Complete installation and tool verification.
+2. Learn the console commands and workspace model.
+3. Run a simple recon module directly.
+4. Run a workflow for a repeatable engagement path.
+5. Use the dashboard/API only after the CLI path is validated.
+6. Use the SOCMINT guide before running identity fusion in an active investigation.
 
 ---
 
@@ -1429,6 +1455,93 @@ rtf > reload          # hot-reload all modules from disk
 ```bash
 pip install reportlab  # for PDF support
 pip install openpyxl   # for XLSX support
+```
+
+---
+
+## 16. TITAN & Upgrade Surfaces
+
+Beyond the standard CLI, API, and dashboard paths, the repository now includes newer architecture layers intended for distributed execution, observability, and upgrade planning.
+
+### TITAN architecture layer
+
+The TITAN layer is described in the project README as a backward-compatible extension for distributed OSINT, SOCMINT, CASM, credential intelligence, graph analytics, AI identity resolution, queue-backed orchestration, and service-level observability.
+
+Common commands:
+
+```bash
+python rtf.py titan manifest
+python rtf.py titan health
+python rtf.py titan investigate --options '{"username":"target_handle"}'
+```
+
+When to use TITAN:
+
+- when you need architecture manifests or deployment introspection
+- when you want a health view of the distributed investigation stack
+- when you are validating Intelligence OS expansion artifacts
+
+### V4 sequential upgrade pipeline
+
+The V4 pipeline generates architecture artifacts while preserving CLI and module compatibility.
+
+```bash
+python rtf.py upgrade analyze
+python rtf.py upgrade run
+```
+
+Pipeline stages:
+
+1. Architecture agent
+2. Module builder
+3. OSINT pipeline builder
+4. SOCMINT pipeline builder
+5. Dashboard builder
+6. Self-healing system builder
+7. Final integration engine
+
+Generated artifacts include:
+
+- `rtf/V4_ARCHITECTURE_REPORT.md`
+- `rtf/V4_UPGRADE_REPORT.json`
+- Intelligence OS manifests, pipelines, and installer metadata under `rtf/intelligence_os/`
+
+### Choosing the right operating surface
+
+| Need | Recommended surface |
+|------|---------------------|
+| Fast, interactive operator work | Console |
+| Repeatable multi-step execution | Workflow engine |
+| Integration with external tooling | REST API |
+| Metrics and visual review | Dashboard |
+| Distributed architecture validation | TITAN |
+| Future-state architecture planning | Upgrade pipeline |
+
+---
+
+## 17. Documentation Map & Operator Checklist
+
+### Documentation map
+
+| Document | Use it for |
+|----------|------------|
+| `README.md` | High-level overview and quick start |
+| `rtf/USER_GUIDE.md` | Full installation and operator reference |
+| `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md` | Identity/SOCMINT investigations |
+| `rtf/dashboard_ui/README.md` | Frontend dashboard development and local UI runbook |
+
+### Practical first-day checklist
+
+```text
+[ ] Install Python dependencies
+[ ] Run tool installation or a scoped category install
+[ ] Confirm available tools with `python rtf.py tools summary`
+[ ] Launch `python rtf.py console`
+[ ] Create a workspace for the engagement
+[ ] Run a low-risk recon module against an authorized target/lab
+[ ] Validate findings, notes, and reporting output
+[ ] Start API/dashboard only after CLI validation succeeds
+[ ] Review the SOCMINT guide before running identity fusion
 ```
 
 ---

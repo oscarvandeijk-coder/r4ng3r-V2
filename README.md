@@ -5,6 +5,20 @@
 
 ---
 
+## Overview
+
+RedTeam Framework (RTF) is a modular operator platform for running offensive security workflows, OSINT/SOCMINT investigations, reporting pipelines, and dashboard/API-driven engagements from one codebase. The project combines:
+
+- **Metasploit-style CLI operations** for day-to-day module execution
+- **Workflow orchestration** for repeatable multi-stage engagements
+- **API and dashboard surfaces** for automation, observability, and collaboration
+- **TITAN / Intelligence OS layers** for distributed investigation and upgrade planning
+- **Structured reporting** across HTML, PDF, XLSX, Markdown, and JSON outputs
+
+If you are new to the repo, start with the quick start section below, then use the documentation map to jump to the guide that matches your workflow.
+
+---
+
 ## What's new in v2.0
 
 - **23 modules** across 9 categories (recon, osint, AD, cloud, web, crypto, wireless, post-exploitation, network)
@@ -15,6 +29,23 @@
 - **Enterprise modules**: Azure AD/Entra, GCP, LDAP, Shodan, SSL/TLS, credential spray, API security
 - **Parallel installer v2** with backup commands for 14+ failing tools and exponential backoff
 - **Professional reporting engine**: HTML, PDF, XLSX, Markdown, JSON with MITRE ATT&CK mapping
+
+---
+
+## Documentation Map
+
+- **Operator quick reference:** `README.md`
+- **Full operator manual:** `rtf/USER_GUIDE.md`
+- **SOCMINT investigation playbook:** `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`
+- **Dashboard UI notes:** `rtf/dashboard_ui/README.md`
+- **Upgrade artifacts:** `rtf/V4_ARCHITECTURE_REPORT.md`, `rtf/V4_UPGRADE_REPORT.json`
+
+Recommended reading order for new users:
+
+1. Read **Quick Start** in this README.
+2. Open **`rtf/USER_GUIDE.md`** for installation, console, workflow, API, and reporting details.
+3. Open **`rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`** before running identity investigations.
+4. Review TITAN / upgrade sections if you plan to use the distributed architecture layers.
 
 ---
 
@@ -43,7 +74,56 @@ python rtf.py dashboard --port 5000
 python rtf.py upgrade analyze
 
 # Docker
-docker-compose up -d
+docker compose up -d
+```
+
+### Suggested first-run checklist
+
+1. Install Python requirements.
+2. Run `python rtf.py install` or a category-scoped install.
+3. Verify tool availability with `python rtf.py tools summary`.
+4. Launch the console and validate module loading with `show modules`.
+5. Start the API/dashboard only after the local CLI path is working.
+6. Create a dedicated workspace before storing findings, notes, or credentials.
+
+---
+
+## Common operator workflows
+
+### 1. Interactive console workflow
+
+```text
+rtf > workspace client-acme
+rtf > use recon/subdomain_enum
+rtf > set target example.com
+rtf > run
+rtf > use web/api_security
+rtf > set url https://api.example.com
+rtf > run
+rtf > report html reports/client-acme.html
+```
+
+### 2. Direct module execution
+
+```bash
+python rtf.py module run recon/ssl_scan --options '{"target":"example.com"}'
+python rtf.py module run web/api_security --options '{"url":"https://api.example.com"}'
+python rtf.py module run cloud/aws_enum --options '{"profile":"default"}'
+```
+
+### 3. Workflow execution
+
+```bash
+python rtf.py workflow list
+python rtf.py workflow run full_recon --options '{"target":"example.com"}'
+python rtf.py workflow run identity_fusion --options '{"username":"target_handle","output_format":"html"}'
+```
+
+### 4. API and dashboard operations
+
+```bash
+python rtf.py api --host 0.0.0.0 --port 8000
+python rtf.py dashboard --host 127.0.0.1 --port 5000
 ```
 
 ---
@@ -128,9 +208,10 @@ Stage K  Multi-format report  JSON / CSV / XLSX / PDF / HTML
 ```
 
 ```bash
-python rtf.py module run osint/identity_fusion \
-  --options '{"username":"target_handle","email":"target@example.com","output_format":"html","use_ai":true}'
+python rtf.py module run osint/identity_fusion   --options '{"username":"target_handle","email":"target@example.com","output_format":"html","use_ai":true}'
 ```
+
+For deeper operating guidance, pivot logic, and example playbooks, see `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`.
 
 ---
 
@@ -146,6 +227,8 @@ cloud_audit        aws_enum → shodan_search
 full_ad_compromise ldap_enum → bloodhound → kerberoast → asreproast
 ssl_web_recon      ssl_scan → subdomain_enum → nuclei → api_security
 ```
+
+Use workflows when you need repeatability, reporting continuity, and lower operator overhead across common engagement patterns.
 
 ---
 
@@ -167,19 +250,31 @@ All endpoints also under `/api/v1/...` for versioned access.
 
 ---
 
-## Legal Notice
+## Dashboard, TITAN, and upgrade surfaces
 
-For **authorized testing only**: penetration testing engagements, red team operations with written permission, CTF competitions, and internal security research in controlled lab environments.
+### Web dashboard
 
+Use the dashboard for high-level metrics, job history, findings review, and workflow launches:
 
-## RTF TITAN
+```bash
+python rtf.py dashboard --port 5000
+```
 
-RTF v2.4 now includes a backward-compatible TITAN architecture layer for distributed OSINT, SOCMINT, CASM, credential intelligence, graph analytics, AI identity resolution, queue-backed orchestration, and multi-service observability. Use `python rtf.py titan manifest`, `python rtf.py titan health`, or `python rtf.py titan investigate --options ...` to inspect and validate the new distributed layer.
+### TITAN architecture layer
 
+RTF v2.4 includes a backward-compatible TITAN architecture layer for distributed OSINT, SOCMINT, CASM, credential intelligence, graph analytics, AI identity resolution, queue-backed orchestration, and multi-service observability.
 
-## V4 Upgrade Pipeline
+Useful commands:
 
-RTF v4.0 now exposes a sequential upgrade pipeline that preserves CLI and module compatibility while generating machine-readable architecture artifacts.
+```bash
+python rtf.py titan manifest
+python rtf.py titan health
+python rtf.py titan investigate --options '{"username":"target_handle"}'
+```
+
+### V4 Upgrade Pipeline
+
+RTF v4.0 exposes a sequential upgrade pipeline that preserves CLI and module compatibility while generating machine-readable architecture artifacts.
 
 ```bash
 python rtf.py upgrade analyze   # architecture map + report artifacts
@@ -199,3 +294,25 @@ The pipeline executes these agents in order:
 Artifacts are written to `rtf/V4_ARCHITECTURE_REPORT.md` and `rtf/V4_UPGRADE_REPORT.json`.
 
 The Intelligence OS expansion layer now also ships a generated manifest and installer bootstrap with 520 mapped tools, 60+ advanced pipelines, and workflow metadata under `rtf/intelligence_os/manifests`, `rtf/intelligence_os/pipelines`, and `rtf/intelligence_os/install`.
+
+---
+
+## Safety, authorization, and scope
+
+For **authorized testing only**: penetration testing engagements, red team operations with written permission, CTF competitions, and internal security research in controlled lab environments.
+
+Recommended operator controls:
+
+- Create a fresh workspace per client or scenario.
+- Store API keys and secrets in config or environment variables rather than shell history.
+- Validate third-party tool licensing and local policy requirements before installation.
+- Keep generated findings, reports, and loot under engagement-specific directories.
+- Review report output before sharing externally.
+
+---
+
+## Where to go next
+
+- Want end-to-end usage details? Read `rtf/USER_GUIDE.md`.
+- Running identity investigations? Read `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`.
+- Working on the frontend dashboard? Read `rtf/dashboard_ui/README.md`.
