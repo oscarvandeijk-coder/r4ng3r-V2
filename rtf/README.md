@@ -184,6 +184,7 @@ RTF v2.4 now includes a backward-compatible TITAN architecture layer for distrib
 - Neo4j-style intelligence graph schema/API with entity and relationship previews plus Cypher export snippets.
 - Upgraded dashboard surface for architecture mapping, queue telemetry, and SOCMINT readiness.
 - See `OMEGA_ARCHITECTURE_MAP.md` for the full architecture map.
+- Intelligence OS upgrade pack now includes a generated manifest with 520 mapped tools, 60+ advanced pipelines, workflow mappings, and installer bootstrap assets under `rtf/intelligence_os/manifests` and `rtf/intelligence_os/install`.
 
 
 ## V4 Upgrade Pipeline
