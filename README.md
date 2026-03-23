@@ -320,3 +320,5 @@ Recommended operator controls:
 - Want end-to-end usage details? Read `rtf/USER_GUIDE.md`.
 - Running identity investigations? Read `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`.
 - Working on the frontend dashboard? Read `rtf/dashboard_ui/README.md`.
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/oscarvandeijk-coder/r4ng3r-V2?utm_source=oss&utm_medium=github&utm_campaign=oscarvandeijk-coder%2Fr4ng3r-V2&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
