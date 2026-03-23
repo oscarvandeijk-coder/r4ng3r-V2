@@ -1,0 +1,13 @@
+name: username_intelligence_pipeline
+input: {type: username}
+stages:
+  - module: sherlock
+    input: {username: username}
+    transformations: [extract_accounts]
+  - module: social-analyzer
+    input: {username: username}
+    required: false
+output:
+  entities: [accounts, usernames]
+graph:
+  relationships: [username -> account]

@@ -1,0 +1,13 @@
+name: dark_web_intelligence_pipeline
+input: {type: keyword}
+stages:
+  - module: onionsearch
+    input: {query: keyword}
+    required: false
+  - module: ahmia
+    input: {query: keyword}
+    required: false
+output:
+  entities: [onion_services, mentions]
+graph:
+  relationships: [keyword -> onion_service]

@@ -1,0 +1,15 @@
+name: infrastructure_intelligence_pipeline
+input: {type: domain}
+stages:
+  - module: httpx
+    input: {domain: domain}
+  - module: shodan
+    input: {ip: ip}
+    required: false
+  - module: nmap
+    input: {target: domain}
+    required: false
+output:
+  entities: [hosts, services, ports]
+graph:
+  relationships: [domain -> ip, ip -> service]

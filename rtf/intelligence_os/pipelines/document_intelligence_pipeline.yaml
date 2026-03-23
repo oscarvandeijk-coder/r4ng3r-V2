@@ -1,0 +1,13 @@
+name: document_intelligence_pipeline
+input: {type: domain}
+stages:
+  - module: metagoofil
+    input: {domain: domain}
+    required: false
+  - module: exiftool
+    input: {file: file}
+    required: false
+output:
+  entities: [documents, metadata]
+graph:
+  relationships: [domain -> document, document -> metadata]

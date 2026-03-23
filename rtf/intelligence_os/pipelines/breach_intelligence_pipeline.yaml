@@ -1,0 +1,16 @@
+name: breach_intelligence_pipeline
+input: {type: email}
+stages:
+  - module: hibp
+    input: {email: email}
+    required: false
+  - module: dehashed
+    input: {query: email}
+    required: false
+  - module: leaklookup
+    input: {query: email}
+    required: false
+output:
+  entities: [breaches, credentials]
+graph:
+  relationships: [email -> breach, email -> credential]

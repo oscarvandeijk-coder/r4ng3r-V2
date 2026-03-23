@@ -1,0 +1,14 @@
+name: attack_surface_intelligence_pipeline
+input: {type: domain}
+stages:
+  - module: httpx
+    input: {domain: domain}
+  - module: nuclei
+    input: {domain: domain}
+  - module: gobuster
+    input: {url: domain}
+    required: false
+output:
+  entities: [urls, findings, paths]
+graph:
+  relationships: [domain -> url, url -> finding]

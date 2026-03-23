@@ -1,0 +1,16 @@
+name: email_intelligence_pipeline
+input: {type: email}
+stages:
+  - module: holehe
+    input: {email: email}
+    transformations: [extract_domains, extract_accounts]
+  - module: emailrep
+    input: {email: email}
+    required: false
+  - module: hibp
+    input: {email: email}
+    required: false
+output:
+  entities: [accounts, breaches, reputations]
+graph:
+  relationships: [email -> account, email -> breach]

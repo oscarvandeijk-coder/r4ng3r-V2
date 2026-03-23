@@ -1,0 +1,12 @@
+name: github_intelligence_pipeline
+input: {type: username}
+stages:
+  - module: sherlock
+    input: {username: username}
+  - module: trufflehog
+    input: {target: username}
+    required: false
+output:
+  entities: [accounts, repositories, secrets]
+graph:
+  relationships: [username -> account, account -> repository]
