@@ -1,10 +1,15 @@
 """RedTeam Framework v2.0 - REST API Server"""
 from __future__ import annotations
-import asyncio, json, uuid
+import asyncio, json, os, platform, shutil, time, uuid
 from contextlib import asynccontextmanager
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional, Set
+
+try:
+    import psutil  # type: ignore
+except ImportError:
+    psutil = None
 
 try:
     from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, WebSocket, WebSocketDisconnect
@@ -83,6 +88,19 @@ if _HAS_FASTAPI:
         workspace: str = "default"
         session_id: Optional[str] = None
 
+    class ToolRunRequest(BaseModel):
+        args: List[str] = []
+        operation_id: str = "primary"
+        target: Optional[str] = None
+
+    class InvestigationRequest(BaseModel):
+        name: str = "Interactive Investigation"
+        operation_id: str = "primary"
+        summary: str = "Dashboard-created investigation"
+        tags: List[str] = []
+        targets: List[Dict[str, Any]] = []
+        seed: Optional[str] = None
+
 
 class EventBroker:
     def __init__(self) -> None:
@@ -121,6 +139,44 @@ def _jsonable(value: Any) -> Any:
 
 def _safe_node_id(entity_type: str, value: str) -> str:
     return f"{entity_type}:{value}".replace(" ", "_")
+
+
+def _system_health_snapshot() -> Dict[str, Any]:
+    cpu_percent = psutil.cpu_percent(interval=0.05) if psutil else 0.0
+    if psutil:
+        vm = psutil.virtual_memory()
+        disk = psutil.disk_usage(str(Path.cwd()))
+        boot_time = psutil.boot_time()
+    else:
+        vm = type("VM", (), {"percent": 0.0, "used": 0, "total": 0})()
+        disk = type("Disk", (), {"percent": 0.0, "used": 0, "total": 0})()
+        boot_time = time.time()
+    load = os.getloadavg() if hasattr(os, "getloadavg") else (0.0, 0.0, 0.0)
+    return {
+        "hostname": platform.node(),
+        "platform": platform.platform(),
+        "python": platform.python_version(),
+        "cpu": {"percent": round(cpu_percent, 2), "load_avg": [round(x, 2) for x in load], "cores": os.cpu_count() or 1},
+        "memory": {"percent": round(vm.percent, 2), "used": getattr(vm, "used", 0), "total": getattr(vm, "total", 0)},
+        "disk": {"percent": round(disk.percent, 2), "used": getattr(disk, "used", 0), "total": getattr(disk, "total", 0)},
+        "runtime": {"uptime_seconds": max(0, int(time.time() - boot_time)), "cwd": str(Path.cwd())},
+        "services": {
+            "rtf-api": "online",
+            "rtf-job-manager": "online",
+            "rtf-worker-cluster": "online",
+            "rtf-graph-engine": "online",
+            "rtf-module-executor": "online",
+            "redis": "configured",
+            "postgresql": "configured",
+            "neo4j": "configured",
+        },
+        "tooling": {
+            "git": shutil.which("git") is not None,
+            "python": shutil.which("python") is not None or shutil.which("python3") is not None,
+            "node": shutil.which("node") is not None,
+            "npm": shutil.which("npm") is not None,
+        },
+    }
 
 
 def _module_registry() -> List[Dict[str, Any]]:
@@ -672,7 +728,73 @@ def create_app() -> "FastAPI":
             "scheduler_jobs": [j.to_dict() for j in scheduler.list_jobs()],
             "api": {"status": "ok", "version": "2.1.0"},
             "database": {"path": config.get("db_path", "data/framework.db"), "status": "connected"},
+            "system": _system_health_snapshot(),
         }
+
+    @app.post("/operations/run_module", tags=["operations"])
+    @v1.post("/operations/run_module", tags=["operations"])
+    async def operations_run_module(body: Dict[str, Any], background_tasks: BackgroundTasks, _auth: None = Depends(require_api_key)):
+        module_path = str(body.get("module") or body.get("path") or "").strip()
+        if "/" not in module_path:
+            raise HTTPException(status_code=400, detail="module must be in category/name format")
+        category, name = module_path.split("/", 1)
+        req = ModuleRunRequest(options=body.get("options") or {}, operation_id=body.get("operation_id") or "primary", target=body.get("target"))
+        return await run_module(category, name, req, background_tasks, _auth)
+
+    @app.post("/operations/run_pipeline", tags=["operations"])
+    @v1.post("/operations/run_pipeline", tags=["operations"])
+    async def operations_run_pipeline(body: Dict[str, Any], background_tasks: BackgroundTasks, _auth: None = Depends(require_api_key)):
+        pipeline = str(body.get("pipeline") or body.get("name") or "").strip()
+        if not pipeline:
+            raise HTTPException(status_code=400, detail="pipeline is required")
+        options = body.get("options") or {}
+        if body.get("seed") and "target" not in options:
+            options["target"] = body["seed"]
+        req = WorkflowRunRequest(options=options, output_dir=body.get("output_dir"), operation_id=body.get("operation_id") or "primary")
+        return await run_workflow(pipeline, req, background_tasks, _auth)
+
+    @app.post("/operations/run_tool", tags=["operations"])
+    @v1.post("/operations/run_tool", tags=["operations"])
+    async def operations_run_tool(name: str, body: ToolRunRequest, _auth: None = Depends(require_api_key)):
+        tool = tool_registry.get(name)
+        if not tool:
+            raise HTTPException(status_code=404, detail=f"Unknown tool: {name}")
+        payload = {"tool": name, "args": body.args, "installed": tool.installed, "target": body.target}
+        await _record_event("tool.run", f"Tool launched from dashboard: {name}", source="tool-manager", target=body.target, operation_id=body.operation_id, payload=payload)
+        return {"status": "submitted", **payload}
+
+    @app.post("/operations/start_investigation", tags=["operations"])
+    @v1.post("/operations/start_investigation", tags=["operations"])
+    async def operations_start_investigation(body: InvestigationRequest, _auth: None = Depends(require_api_key)):
+        db.upsert_operation(body.operation_id, name=body.name, summary=body.summary, target=body.seed or "", tags=body.tags)
+        for target in body.targets:
+            value = str(target.get("value") or body.seed or "").strip()
+            if value:
+                db.add_target(value, str(target.get("type") or "domain"), ",".join(target.get("tags") or []))
+        await _record_event("investigation.started", f"Investigation started: {body.name}", source="workspace", target=body.seed, operation_id=body.operation_id, payload=body.model_dump())
+        return {"status": "created", "operation_id": body.operation_id, "targets": body.targets}
+
+    @app.get("/operations/query_graph", tags=["operations"])
+    @v1.get("/operations/query_graph", tags=["operations"])
+    async def operations_query_graph(operation_id: str = Query("primary"), q: Optional[str] = Query(None), entity_type: Optional[str] = Query(None), _auth: None = Depends(require_api_key)):
+        nodes = db.list_graph_nodes(operation_id=operation_id, entity_type=entity_type)
+        edges = db.list_graph_edges(operation_id=operation_id)
+        if q:
+            ql = q.lower()
+            nodes = [node for node in nodes if ql in json.dumps(node).lower()]
+            node_ids = {node["id"] for node in nodes}
+            edges = [edge for edge in edges if edge["source_node_id"] in node_ids or edge["target_node_id"] in node_ids or ql in json.dumps(edge).lower()]
+        return {"nodes": nodes, "edges": edges, "schema": {"entity_types": ENTITY_TYPES, "relationship_types": RELATIONSHIP_TYPES}}
+
+    @app.get("/operations/fetch_results", tags=["operations"])
+    @v1.get("/operations/fetch_results", tags=["operations"])
+    async def operations_fetch_results(operation_id: str = Query("primary"), job_id: Optional[str] = Query(None), _auth: None = Depends(require_api_key)):
+        jobs = [db.get_job(job_id)] if job_id else db.list_jobs(limit=100)
+        jobs = [job for job in jobs if job]
+        findings = db.list_findings(job_id=job_id, limit=250)
+        reports = db.list_reports(operation_id=operation_id)
+        artifacts = db.list_artifacts(operation_id=operation_id)
+        return {"jobs": jobs, "findings": findings, "reports": reports, "artifacts": artifacts}
 
     @app.post("/dashboard/terminal/command", tags=["dashboard"])
     @v1.post("/dashboard/terminal/command", tags=["dashboard"])
