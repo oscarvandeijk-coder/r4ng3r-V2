@@ -39,6 +39,7 @@ If you are new to the repo, start with the quick start section below, then use t
 - **SOCMINT investigation playbook:** `rtf/SOCMINT_IDENTITY_OPERATIONS_GUIDE.md`
 - **Dashboard UI notes:** `rtf/dashboard_ui/README.md`
 - **Upgrade artifacts:** `rtf/V4_ARCHITECTURE_REPORT.md`, `rtf/V4_UPGRADE_REPORT.json`
+- **Codex planning pack:** `rtf/intelligence_os/planning/CODEX_AUTHORIZED_UPGRADE_BRIEF.md`, `rtf/intelligence_os/planning/workflow_mappings.yaml`, `rtf/intelligence_os/planning/example_investigations.yaml`
 
 Recommended reading order for new users:
 
@@ -72,6 +73,9 @@ python rtf.py dashboard --port 5000
 
 # Generate the V4 architecture report
 python rtf.py upgrade analyze
+
+# Regenerate the Codex planning pack
+python rtf/intelligence_os/scripts/generate_upgrade_pack.py
 
 # Docker
 docker compose up -d
