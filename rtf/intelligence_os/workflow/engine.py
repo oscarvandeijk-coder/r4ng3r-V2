@@ -1,9 +1,12 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
 
 from intelligence_os.pipeline.engine import PipelineEngine
+from intelligence_os.tooling.catalog import load_workflow_mappings
+
 
 @dataclass
 class WorkflowDefinition:
@@ -13,17 +16,29 @@ class WorkflowDefinition:
     triggers: List[str] = field(default_factory=list)
     outputs: List[str] = field(default_factory=list)
 
+
 class WorkflowEngine:
     def __init__(self, pipeline_engine: PipelineEngine | None = None, pipeline_dir: str | Path | None = None) -> None:
         self.pipeline_engine = pipeline_engine or PipelineEngine()
         self.pipeline_dir = Path(pipeline_dir or Path(__file__).resolve().parents[1] / 'pipelines')
-        self.workflows: Dict[str, WorkflowDefinition] = {
+        generated = {
+            entry['name']: WorkflowDefinition(
+                name=entry['name'],
+                description=entry['description'],
+                pipelines=[f"{pipeline}.yaml" if not pipeline.endswith('.yaml') else pipeline for pipeline in entry['pipelines']],
+                triggers=entry.get('triggers', ['manual', 'scheduled']),
+                outputs=entry.get('outputs', ['graph', 'report', 'telemetry']),
+            )
+            for entry in load_workflow_mappings()
+        }
+        builtin = {
             'target_profiling': WorkflowDefinition('target_profiling', 'Profile a target across identity, email, domain, and social pivots.', ['identity_intelligence_pipeline.yaml', 'email_intelligence_pipeline.yaml', 'domain_intelligence_pipeline.yaml'], ['new_person', 'new_username'], ['profile', 'graph', 'report']),
             'identity_investigation': WorkflowDefinition('identity_investigation', 'Pivot recursively from username to accounts, emails, domains, and breaches.', ['username_intelligence_pipeline.yaml', 'email_intelligence_pipeline.yaml', 'breach_intelligence_pipeline.yaml'], ['new_username'], ['identity_graph', 'risk_score']),
             'infrastructure_recon': WorkflowDefinition('infrastructure_recon', 'Map attack surface, services, and exposure.', ['domain_intelligence_pipeline.yaml', 'infrastructure_intelligence_pipeline.yaml', 'attack_surface_intelligence_pipeline.yaml'], ['new_domain'], ['service_map', 'exposure_report']),
             'breach_monitoring': WorkflowDefinition('breach_monitoring', 'Continuously monitor breach, credential, and leak exposure.', ['breach_intelligence_pipeline.yaml', 'credential_intelligence_pipeline.yaml'], ['new_email', 'new_domain'], ['alerts', 'breach_summary']),
             'social_network_mapping': WorkflowDefinition('social_network_mapping', 'Map social and identity signals for people and personas.', ['social_network_intelligence_pipeline.yaml', 'username_intelligence_pipeline.yaml'], ['new_person', 'new_username'], ['network_graph', 'accounts']),
         }
+        self.workflows: Dict[str, WorkflowDefinition] = {**builtin, **generated}
 
     def run_workflow(self, name: str, seed: Dict[str, str]) -> Dict[str, object]:
         workflow = self.workflows[name]

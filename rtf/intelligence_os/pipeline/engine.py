@@ -28,7 +28,10 @@ class PipelineEngine:
             module = module_cls()
             input_mapping = stage.get('input', {})
             module_input = {k: seed.get(v, context.get(v, seed.get(k, v))) for k, v in input_mapping.items()} if input_mapping else seed.copy()
-            execution = module.execute(module_input, ModuleContext(seed=seed, workspace=workspace, telemetry=context))
+            try:
+                execution = module.execute(module_input, ModuleContext(seed=seed, workspace=workspace, telemetry=context))
+            except Exception as exc:
+                execution = type('ExecutionFailure', (), {'success': False, 'error': str(exc), 'entities': [], 'relationships': []})()
             result.executed_modules.append(module_name)
             if not execution.success:
                 result.success = False

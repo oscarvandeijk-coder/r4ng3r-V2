@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from pathlib import Path
+
 from fastapi import FastAPI
 
 from intelligence_os.architecture import ARCHITECTURE_LAYERS
@@ -9,8 +11,9 @@ from intelligence_os.pipeline.engine import PipelineEngine
 from intelligence_os.tooling.registry import registry
 from intelligence_os.workflow.engine import WorkflowEngine
 
+
 def create_app() -> FastAPI:
-    app = FastAPI(title='Intelligence OS API', version='1.0.0')
+    app = FastAPI(title='Intelligence OS API', version='1.1.0')
     pipeline_engine = PipelineEngine()
     workflow_engine = WorkflowEngine(pipeline_engine=pipeline_engine)
     autonomous_engine = AutonomousInvestigationEngine(pipeline_engine=pipeline_engine)
@@ -24,9 +27,21 @@ def create_app() -> FastAPI:
     def architecture():
         return {k: {'name': v.name, 'responsibilities': v.responsibilities} for k, v in ARCHITECTURE_LAYERS.items()}
 
+    @app.get('/intelligence-os/analysis')
+    def analysis():
+        return registry.framework_analysis()
+
     @app.get('/intelligence-os/tools')
     def tools():
         return {'summary': registry.summary(), 'sample': [t.__dict__ for t in registry.list_tools()[:50]]}
+
+    @app.get('/intelligence-os/modules')
+    def modules():
+        return {'modules': registry.list_module_mappings()}
+
+    @app.get('/intelligence-os/pipelines')
+    def pipelines():
+        return {'pipelines': registry.list_pipeline_mappings()}
 
     @app.post('/intelligence-os/pipelines/{pipeline_name}/run')
     def run_pipeline(pipeline_name: str, seed: dict):

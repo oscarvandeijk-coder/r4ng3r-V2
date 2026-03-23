@@ -39,7 +39,13 @@ class BaseModule:
             raise RuntimeError(f'rate limit exceeded for {self.name}')
 
     def build_command(self, input_data: Dict[str, Any]) -> str:
-        return self.command_template.format(**input_data)
+        class SafeDict(dict):
+            def __missing__(self, key: str) -> str:
+                if self:
+                    return str(next(iter(self.values())))
+                return f'{{{key}}}'
+
+        return self.command_template.format_map(SafeDict({k: v for k, v in input_data.items()}))
 
     def run(self, input_data: Dict[str, Any], context: ModuleContext | None = None) -> Dict[str, Any]:
         self.check_rate_limit()

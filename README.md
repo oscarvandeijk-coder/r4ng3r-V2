@@ -197,3 +197,5 @@ The pipeline executes these agents in order:
 7. Final integration engine
 
 Artifacts are written to `rtf/V4_ARCHITECTURE_REPORT.md` and `rtf/V4_UPGRADE_REPORT.json`.
+
+The Intelligence OS expansion layer now also ships a generated manifest and installer bootstrap with 520 mapped tools, 60+ advanced pipelines, and workflow metadata under `rtf/intelligence_os/manifests`, `rtf/intelligence_os/pipelines`, and `rtf/intelligence_os/install`.
